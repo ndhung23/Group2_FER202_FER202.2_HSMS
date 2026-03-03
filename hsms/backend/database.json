@@ -1,5 +1,16 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": "usr_2d4a90732916",
+      "phone": "0900000000",
+      "fullName": "Default Admin",
+      "role": "ADMIN",
+      "passwordHash": "cb3ac2999fea449c3f506aa4847b69e9:8f240ccdbb58d408242b0c1b6e01372d496a468b638a9443ec7825236adea4ea776a67a17fdede4fb54d445f49bd03cf488550006ebdd9616ab02f13370fa689",
+      "status": "ACTIVE",
+      "createdAt": "2026-03-03T18:06:11.639Z",
+      "updatedAt": "2026-03-03T18:06:11.639Z"
+    }
+  ],
   "customerProfiles": [],
   "helperProfiles": [],
   "addresses": [],

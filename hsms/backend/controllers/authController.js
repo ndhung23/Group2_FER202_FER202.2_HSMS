@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
 const { getCollection, insertOne } = require('../services/dbService');
 const { generateId } = require('../utils/generateId');
 const { hashPassword, comparePassword } = require('../utils/password');
 const { ROLES } = require('../constants/roles');
+const { signToken } = require('../utils/token');
 
 function sanitizeUser(user) {
   const { passwordHash, ...safeUser } = user;
@@ -51,7 +51,7 @@ async function login(req, res, next) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign(
+    const token = signToken(
       { sub: user.id, role: user.role, email: user.email },
       process.env.JWT_SECRET || 'dev_secret_key',
       { expiresIn: '7d' },

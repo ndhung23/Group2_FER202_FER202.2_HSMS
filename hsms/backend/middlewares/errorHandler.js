@@ -1,13 +1,12 @@
 function errorHandler(err, req, res, next) {
-  console.error('[ERROR]', err);
-  if (res.headersSent) {
-    return next(err);
-  }
-
-  const statusCode = err.statusCode || 500;
-  return res.status(statusCode).json({
+  if (res.headersSent) return next(err);
+  const status = err.status || 500;
+  return res.status(status).json({
+    success: false,
+    data: null,
     message: err.message || 'Internal Server Error',
+    error: err.error || 'INTERNAL_ERROR',
   });
 }
 
-module.exports = { errorHandler };
+module.exports = errorHandler;

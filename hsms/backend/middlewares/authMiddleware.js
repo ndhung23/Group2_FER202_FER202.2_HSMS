@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const { verifyToken: verifyAccessToken } = require('../utils/token');
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization || '';
@@ -9,7 +9,7 @@ function verifyToken(req, res, next) {
   }
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret_key');
+    req.user = verifyAccessToken(token, process.env.JWT_SECRET || 'dev_secret_key');
     return next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid or expired token' });

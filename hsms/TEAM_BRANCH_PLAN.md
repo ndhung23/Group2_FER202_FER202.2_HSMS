@@ -10,7 +10,13 @@
   - `feature/member-3-helper-module`
   - `feature/member-4-payment-review`
   - `feature/member-5-admin-report-coupon`
-  - `feature/member-6-frontend-dashboard`
+  - `feature/member-6-frontend-integration`
+
+> Tạo nhanh toàn bộ branch bằng lệnh:
+
+```bash
+npm run setup:branches
+```
 
 ## Chia việc chi tiết
 
@@ -63,8 +69,7 @@
 - Không phá vỡ contract JSON response chung.
 - Rebase branch mới nhất từ `develop` trước khi tạo PR.
 
-
 ## Quy tắc công nghệ
 
 - Dùng JavaScript (Node.js CommonJS), **không dùng TypeScript**.
-- Chi tiết ownership theo file: xem `MEMBER_TASK_BOARD.md`.
+- Chi tiết ownership theo file: xem `MEMBER_TASK_BOARD.md` và `docs/TEAM_WORKSPACE.md`.

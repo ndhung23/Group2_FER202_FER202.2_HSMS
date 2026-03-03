@@ -1,41 +1,22 @@
-# HSMS (Home Service Marketplace)
+# HSMS Monorepo
 
-Project gồm 2 phần:
+## Structure
 
-- Frontend: React (`src/`)
-- Backend skeleton: JavaScript (Node http) + file DB (`backend/`)
+- `backend/`: Node.js + Express + JSON database
+- `frontend/`: React + Router + Axios + Bootstrap
 
-## Quick start
+## Run (development)
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 
-Chạy backend API (khung JS, chạy được ngay):
+- Backend: `http://localhost:4000`
+- Frontend: `http://localhost:3000`
 
-```bash
-npm run server
-```
+## Default admin seed
 
-## Tài liệu chia việc team 6 người
-
-Xem file: `TEAM_BRANCH_PLAN.md` và `MEMBER_TASK_BOARD.md`
-
-## API base
-
-- `http://localhost:5000/api/auth`
-- `http://localhost:5000/api/users`
-- `http://localhost:5000/api/services`
-- `http://localhost:5000/api/bookings`
-- `http://localhost:5000/api/helpers`
-- `http://localhost:5000/api/payments`
-- `http://localhost:5000/api/reviews`
-- `http://localhost:5000/api/admin`
-
-
-## Lưu ý stack
-
-- Backend đang dùng JavaScript (CommonJS), không dùng TypeScript.
-
-- Toàn bộ code đang dùng JavaScript, không cần TypeScript.
+- phone: `0900000000`
+- password: `admin123`
+- role: `ADMIN`
