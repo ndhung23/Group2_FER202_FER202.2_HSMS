@@ -3,6 +3,7 @@
     {
       "id": "1",
       "role": "ADMIN",
+      "username": "admin1",
       "fullName": "System Admin",
       "phone": "0900000000",
       "email": "admin@giupviec.vn",
@@ -15,6 +16,7 @@
     {
       "id": "2",
       "role": "CUSTOMER",
+      "username": "cus1",
       "fullName": "Nguyễn Văn A",
       "phone": "0911111111",
       "email": "a@gmail.com",
@@ -27,6 +29,7 @@
     {
       "id": "3",
       "role": "HELPER",
+      "username": "hepler1",
       "fullName": "Trần Thị B",
       "phone": "0922222222",
       "email": "b@gmail.com",
