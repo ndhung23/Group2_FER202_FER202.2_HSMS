@@ -6,8 +6,12 @@ import RoleRoute from "./components/RoleRoute";
 // Public
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/auth/LoginPage";
+
+//Auth
 import RegisterPage from "./pages/auth/RegisterPage";
 import ServicesPage from "./pages/ServicesPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
 
 // Customer
 import CustomerDashboard from "./pages/CustomerDashboard";
@@ -31,7 +35,9 @@ function App() {
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
+        <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
+        <Route path="/change-password" element={<ChangePasswordPage/>}/>
+        
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
 

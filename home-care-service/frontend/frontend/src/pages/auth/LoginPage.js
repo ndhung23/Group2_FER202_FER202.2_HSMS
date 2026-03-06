@@ -101,7 +101,10 @@ export default function LoginPage() {
                     className="p-0 text-decoration-none"
                     onClick={(e) => e.preventDefault()}
                   >
-                    Quên mật khẩu?
+                    <Link to="/forgot-password" className="text-decoration-none">
+                      Quên mật khẩu?
+                    </Link>
+                    
                   </Button>
                 </Col>
               </Row>

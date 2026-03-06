@@ -40,30 +40,17 @@
       "updatedAt": "2026-01-06T08:00:00Z"
     },
     {
-      "id": "465d",
+      "id": "4",
       "role": "CUSTOMER",
-      "username": "Test1",
-      "fullName": "Nguyen Test",
-      "phone": "0355555555",
-      "email": "test@gmail.com",
-      "passwordHash": "A123456@",
-      "avatarUrl": "",
-      "status": "ACTIVE",
-      "createdAt": "2026-03-06T19:33:41.210Z",
-      "updatedAt": "2026-03-06T19:33:41.210Z"
-    },
-    {
-      "id": "4666",
-      "role": "CUSTOMER",
-      "username": "test2",
-      "fullName": "aa aa",
+      "username": "iot",
+      "fullName": "IOT102",
       "phone": "0312345678",
-      "email": "aa@gmail.com",
-      "passwordHash": "A123456@",
+      "email": "iot102demo@gmail.com",
+      "passwordHash": "Aa123456@",
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-03-06T19:42:49.097Z",
-      "updatedAt": "2026-03-06T19:42:49.097Z"
+      "updatedAt": "2026-03-06T20:56:40.277Z"
     }
   ],
   "customerProfiles": [
