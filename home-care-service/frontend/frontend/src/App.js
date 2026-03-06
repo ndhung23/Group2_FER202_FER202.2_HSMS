@@ -5,9 +5,13 @@ import RoleRoute from "./components/RoleRoute";
 
 // Public
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/auth/LoginPage";
+
+//Auth
+import RegisterPage from "./pages/auth/RegisterPage";
 import ServicesPage from "./pages/ServicesPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
 
 // Customer
 import CustomerDashboard from "./pages/CustomerDashboard";
@@ -18,8 +22,8 @@ import CustomerCreateBooking from "./pages/CustomerCreateBooking";
 import HelperDashboard from "./pages/HelperDashboard";
 
 // Admin
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminServices from "./pages/AdminServices";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminServices from "./pages/admin/AdminServices";
 
 function App() {
   return (
@@ -31,7 +35,9 @@ function App() {
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
+        <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
+        <Route path="/change-password" element={<ChangePasswordPage/>}/>
+        
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
 

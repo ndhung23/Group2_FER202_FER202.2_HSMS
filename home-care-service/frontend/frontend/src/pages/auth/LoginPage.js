@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { setAuth } from "../utils/auth";
+import { setAuth } from "../../utils/auth";
 import axios from "axios";
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -101,7 +101,10 @@ export default function LoginPage() {
                     className="p-0 text-decoration-none"
                     onClick={(e) => e.preventDefault()}
                   >
-                    Quên mật khẩu?
+                    <Link to="/forgot-password" className="text-decoration-none">
+                      Quên mật khẩu?
+                    </Link>
+                    
                   </Button>
                 </Col>
               </Row>
