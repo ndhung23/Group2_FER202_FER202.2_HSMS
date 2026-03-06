@@ -133,7 +133,11 @@ function RegisterPage() {
         email: "", phone: "", password: "",confirmPassword: ""
       });
       setTimeout(() => {
-        navigate("/login")
+        navigate("/login",{
+          state:{
+            username:form.username
+          }
+        })
       }, 1500)
     } catch (err) {
       console.error(err);
