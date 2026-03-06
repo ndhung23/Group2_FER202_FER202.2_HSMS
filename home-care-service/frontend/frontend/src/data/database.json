@@ -7,7 +7,7 @@
       "fullName": "System Admin",
       "phone": "0900000000",
       "email": "admin@giupviec.vn",
-      "passwordHash": "$2b$10$examplehash",
+      "passwordHash": "123",
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-01-01T08:00:00Z",
@@ -20,7 +20,7 @@
       "fullName": "Nguyễn Văn A",
       "phone": "0911111111",
       "email": "a@gmail.com",
-      "passwordHash": "$2b$10$examplehash",
+      "passwordHash": "123",
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-01-05T08:00:00Z",
@@ -29,18 +29,30 @@
     {
       "id": "3",
       "role": "HELPER",
-      "username": "hepler1",
+      "username": "helper1",
       "fullName": "Trần Thị B",
       "phone": "0922222222",
       "email": "b@gmail.com",
-      "passwordHash": "$2b$10$examplehash",
+      "passwordHash": "123",
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-01-06T08:00:00Z",
       "updatedAt": "2026-01-06T08:00:00Z"
+    },
+    {
+      "id": "465d",
+      "role": "CUSTOMER",
+      "username": "Test1",
+      "fullName": "Nguyen Test",
+      "phone": "0355555555",
+      "email": "test@gmail.com",
+      "passwordHash": "A123456@",
+      "avatarUrl": "",
+      "status": "ACTIVE",
+      "createdAt": "2026-03-06T19:33:41.210Z",
+      "updatedAt": "2026-03-06T19:33:41.210Z"
     }
   ],
-
   "customerProfiles": [
     {
       "id": "1",
@@ -51,7 +63,6 @@
       "updatedAt": "2026-01-05T08:00:00Z"
     }
   ],
-
   "helperProfiles": [
     {
       "id": "1",
@@ -75,7 +86,6 @@
       "updatedAt": "2026-01-06T08:00:00Z"
     }
   ],
-
   "addresses": [
     {
       "id": "1",
@@ -91,7 +101,6 @@
       "createdAt": "2026-01-05T08:00:00Z"
     }
   ],
-
   "services": [
     {
       "id": "1",
@@ -105,7 +114,6 @@
       "createdAt": "2026-01-01T08:00:00Z"
     }
   ],
-
   "serviceSkills": [
     {
       "id": "1",
@@ -116,9 +124,7 @@
       "isActive": true
     }
   ],
-
   "helperSchedules": [],
-
   "bookings": [
     {
       "id": "1",
@@ -143,9 +149,7 @@
       "updatedAt": "2026-01-10T10:30:00Z"
     }
   ],
-
   "bookingAssignments": [],
-
   "payments": [
     {
       "id": "1",
@@ -159,7 +163,6 @@
       "createdAt": "2026-01-10T08:00:00Z"
     }
   ],
-
   "payouts": [
     {
       "id": "1",
@@ -173,7 +176,6 @@
       "paidAt": "2026-01-10T18:00:00Z"
     }
   ],
-
   "reviews": [
     {
       "id": "1",
@@ -182,12 +184,13 @@
       "helperId": "3",
       "rating": 5,
       "comment": "Làm việc rất sạch sẽ và đúng giờ",
-      "tags": ["Đúng giờ", "Sạch sẽ"],
+      "tags": [
+        "Đúng giờ",
+        "Sạch sẽ"
+      ],
       "createdAt": "2026-01-10T11:00:00Z"
     }
   ],
-
   "coupons": [],
-
   "auditLogs": []
 }

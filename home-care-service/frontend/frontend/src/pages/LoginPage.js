@@ -1,26 +1,43 @@
 import { useState } from "react";
-import { Card, Form, Button, Row, Col } from "react-bootstrap";
+import { Card, Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import { setAuth } from "../utils/auth";
-
+import axios from "axios";
 export default function LoginPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
+  const [error, setError] = useState("");
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Khung mô phỏng: nếu username chứa từ khoá thì set role tương ứng
-    let role = "CUSTOMER";
-    if (username.toLowerCase().includes("admin")) role = "ADMIN";
-    if (username.toLowerCase().includes("helper")) role = "HELPER";
-
-    setAuth("mock-token", role);
-
-    if (role === "ADMIN") navigate("/admin");
-    else if (role === "HELPER") navigate("/helper");
-    else navigate("/customer");
+    setError("");
+    if (!username || !password) {
+      //alert("Vui lòng nhập đầy đủ username và password");
+      setError("Vui lòng nhập đầy đủ username và password");
+      return;
+    }
+    try {
+      const res = await axios.get("http://localhost:9999/users", {
+        params: {
+          username: username,
+          passwordHash: password
+        }
+      });
+      const users = res.data;
+      if (!users || users.length === 0) {
+        //alert("Sai username hoặc password");
+        setError("Sai tài khoản hoặc mật khẩu.");
+        return;
+      }
+      const user = users[0];
+      setAuth("mock-token", user.role);
+      if (user.role === "ADMIN") navigate("/admin");
+      else if (user.role === "HELPER") navigate("/helper");
+      else navigate("/customer");
+    } catch (error) {
+      console.error(error);
+      alert("Có lỗi khi đăng nhập");
+    }
   };
 
   return (
@@ -37,7 +54,7 @@ export default function LoginPage() {
             <div className="text-center mb-4">
               <div className="hj-logo mb-2">H</div>
               <div className="fw-bold" style={{ color: "#f59f00" }}>
-                HomeJoy
+                HomeCare
               </div>
               <h2 className="mt-2 mb-1">Chào mừng trở lại!</h2>
               <div className="hj-muted">
@@ -53,6 +70,7 @@ export default function LoginPage() {
                   placeholder="username123"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  required
                 />
               </Form.Group>
 
@@ -63,8 +81,14 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </Form.Group>
+              {
+                error && (
+                  <Alert variant="danger">{error}</Alert>
+                )
+              }
 
               <Row className="align-items-center mb-3">
                 <Col>
@@ -113,16 +137,6 @@ export default function LoginPage() {
             </Form>
 
             <hr className="my-4" />
-
-            <div className="hj-muted" style={{ fontSize: 13 }}>
-              (Demo khung) Gợi ý nhanh:
-              <br />
-              • Nhập username chứa <strong>admin</strong> → vào trang Admin
-              <br />
-              • Chứa <strong>helper</strong> → vào trang Helper
-              <br />
-              • Khác → vào trang Khách hàng
-            </div>
           </Card.Body>
         </Card>
       </div>

@@ -12,11 +12,14 @@ export default function HomePage() {
                 Giải pháp giúp việc gia đình số 1
               </Badge>
               <h1 className="hj-hero-title mb-3">
-                Đặt giúp việc uy tín <span style={{ color: "#0d6efd" }}>chỉ trong 1 phút</span>
+                Đặt giúp việc uy tín
+              </h1>
+              <h1 className="hj-hero-title mb-3">
+                <span style={{ color: "#0d6efd" }}>chỉ trong 1 phút</span>
               </h1>
               <p className="hj-hero-subtitle mb-4">
-                HomeJoy kết nối bạn với những người giúp việc chuyên nghiệp, đã qua kiểm duyệt kỹ lưỡng.
-                Tận hưởng thời gian bên gia đình (UI khung, chưa có nghiệp vụ).
+                HomeCare kết nối bạn với những người giúp việc chuyên nghiệp, đã qua kiểm duyệt kỹ lưỡng.
+                Tận hưởng thời gian bên gia đình.
               </p>
 
               <Card className="hj-hero-card p-2 p-md-3">
@@ -73,7 +76,7 @@ export default function HomePage() {
       <section className="hj-section">
         <Container>
           <div className="text-center mb-4">
-            <h2 className="hj-section-title">Khách hàng nói gì về HomeJoy</h2>
+            <h2 className="hj-section-title">Khách hàng nói gì về HomeCare</h2>
             <div className="hj-muted">Hàng ngàn gia đình đã tin tưởng và hài lòng với dịch vụ của chúng tôi.</div>
           </div>
 
@@ -213,7 +216,7 @@ export default function HomePage() {
               Sẵn sàng để ngôi nhà của bạn tỏa sáng?
             </h2>
             <div style={{ opacity: 0.9 }}>
-              Tham gia cùng 50,000+ gia đình đã tin tưởng sử dụng HomeJoy mỗi ngày (UI khung).
+              Tham gia cùng 50,000+ gia đình đã tin tưởng sử dụng HomeCare mỗi ngày (UI khung).
             </div>
             <div className="d-flex flex-column flex-sm-row justify-content-center gap-2 mt-4">
               <Button as={Link} to="/customer/bookings/new" variant="light" className="rounded-pill px-4">
