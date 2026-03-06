@@ -17,7 +17,7 @@ export default function AppNavbar() {
       <Container>
         <Navbar.Brand as={NavLink} to="/" className="hj-navbar-brand">
           <span className="hj-logo">H</span>
-          <span>HomeJoy</span>
+          <span>HomeCare</span>
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="hj-navbar" />
@@ -48,14 +48,14 @@ export default function AppNavbar() {
           </Nav>
 
           <div className="d-flex align-items-center gap-2">
-            <Button
+            {/* <Button
               as={NavLink}
               to="/register"
               variant="primary"
               className="rounded-pill px-3"
             >
               Trở thành Helper
-            </Button>
+            </Button> */}
 
             {!token ? (
               <>

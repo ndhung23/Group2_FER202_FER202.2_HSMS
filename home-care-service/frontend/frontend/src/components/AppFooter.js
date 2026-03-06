@@ -9,11 +9,11 @@ export default function AppFooter() {
           <Col md={4}>
             <div className="d-flex align-items-center gap-2 mb-2">
               <span className="hj-logo">H</span>
-              <span className="hj-footer-title mb-0">HomeJoy</span>
+              <span className="hj-footer-title mb-0">HomeCare</span>
             </div>
             <div className="hj-muted" style={{ color: "rgba(255,255,255,0.72)" }}>
-              HomeJoy là nền tảng giúp việc gia đình hàng đầu, kết nối hàng ngàn gia đình
-              với những người giúp việc tận tâm và chuyên nghiệp (UI khung).
+              HomeCare là nền tảng giúp việc gia đình hàng đầu, kết nối hàng ngàn gia đình
+              với những người giúp việc tận tâm và chuyên nghiệp.
             </div>
           </Col>
 
@@ -45,14 +45,14 @@ export default function AppFooter() {
             <div className="hj-footer-title">Liên hệ</div>
             <div className="d-flex flex-column gap-2">
               <div>1900 1234</div>
-              <div>support@homejoy.vn</div>
-              <div>123 Đường ABC, Quận 1, TP.HCM</div>
+              <div>support@HomeCare.vn</div>
+              <div>128 Yên Lãng, Đống Đa, TP.HN</div>
             </div>
           </Col>
         </Row>
 
         <div className="hj-footer-divider text-center">
-          © {new Date().getFullYear()} HomeJoy. Tất cả quyền được bảo lưu.
+          © {new Date().getFullYear()} HomeCare, All Rights Reserved
         </div>
       </Container>
     </footer>
