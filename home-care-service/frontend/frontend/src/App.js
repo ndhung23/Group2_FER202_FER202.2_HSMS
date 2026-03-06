@@ -5,8 +5,8 @@ import RoleRoute from "./components/RoleRoute";
 
 // Public
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import ServicesPage from "./pages/ServicesPage";
 
 // Customer
@@ -18,8 +18,8 @@ import CustomerCreateBooking from "./pages/CustomerCreateBooking";
 import HelperDashboard from "./pages/HelperDashboard";
 
 // Admin
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminServices from "./pages/AdminServices";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminServices from "./pages/admin/AdminServices";
 
 function App() {
   return (

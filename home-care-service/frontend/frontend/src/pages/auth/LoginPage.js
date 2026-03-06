@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { setAuth } from "../utils/auth";
+import { setAuth } from "../../utils/auth";
 import axios from "axios";
 export default function LoginPage() {
   const navigate = useNavigate();
