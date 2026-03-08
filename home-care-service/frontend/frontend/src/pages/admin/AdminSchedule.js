@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Card, Table, Badge, Form, Row, Col, Button, Pagination, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
@@ -51,10 +51,10 @@ export default function AdminSchedule() {
   }, []);
 
   const getUser = (id) => users.find(u => String(u.id) === String(id));
-  const getUserName = (id) => {
-    const u = getUser(id);
+  const getUserName = useCallback((id) => {
+    const u = users.find(user => String(user.id) === String(id));
     return u ? u.fullName : "Unknown";
-  };
+  }, [users]);
   const getServiceName = (id) => {
     const s = services.find(srv => String(srv.id) === String(id));
     return s ? s.name : "Unknown Service";
@@ -79,7 +79,7 @@ export default function AdminSchedule() {
 
       return bCode.includes(keyword) || cName.includes(keyword) || hName.includes(keyword);
     });
-  }, [bookings, search, users]);
+  }, [bookings, search, getUserName]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -200,19 +200,19 @@ export default function AdminSchedule() {
               Giám sát lịch hẹn, quản lý CRUD (Create, Read, Update, Delete) & phân công người giúp việc.
             </div>
           </div>
-          
+
           <Card className="border-0 shadow-sm rounded-4">
             <Card.Header className="bg-white border-0 rounded-top-4 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
               <div className="d-flex align-items-center gap-3">
                 <Form.Control
-                    placeholder="Tìm mã đơn, tên khách/giúp việc..."
-                    value={search}
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="rounded-3"
-                    style={{ width: "350px", height: "42px" }}
+                  placeholder="Tìm mã đơn, tên khách/giúp việc..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="rounded-3"
+                  style={{ width: "350px", height: "42px" }}
                 />
               </div>
 
@@ -243,8 +243,8 @@ export default function AdminSchedule() {
                           <td className="fw-semibold text-secondary">{b.bookingCode}</td>
                           <td className="fw-semibold">{getUserName(b.customerId)}</td>
                           <td>
-                            {b.assignedHelperId 
-                              ? <span className="fw-semibold text-primary">{getUserName(b.assignedHelperId)}</span> 
+                            {b.assignedHelperId
+                              ? <span className="fw-semibold text-primary">{getUserName(b.assignedHelperId)}</span>
                               : <span className="text-muted fst-italic">Chưa phân công</span>
                             }
                           </td>
@@ -258,17 +258,17 @@ export default function AdminSchedule() {
                             {getStatusBadge(b.status)}
                           </td>
                           <td className="text-center">
-                             <div className="d-flex justify-content-center gap-2">
-                                <Button size="sm" variant="outline-info" className="rounded-3 px-2" onClick={() => handleShowView(b)}>
-                                  Xem
-                                </Button>
-                                <Button size="sm" variant="outline-primary" className="rounded-3 px-2" onClick={() => handleShowEdit(b)}>
-                                  Sửa
-                                </Button>
-                                <Button size="sm" variant="outline-danger" className="rounded-3 px-2" onClick={() => handleDelete(b.id)}>
-                                  Xóa
-                                </Button>
-                             </div>
+                            <div className="d-flex justify-content-center gap-2">
+                              <Button size="sm" variant="outline-info" className="rounded-3 px-2" onClick={() => handleShowView(b)}>
+                                Xem
+                              </Button>
+                              <Button size="sm" variant="outline-primary" className="rounded-3 px-2" onClick={() => handleShowEdit(b)}>
+                                Sửa
+                              </Button>
+                              <Button size="sm" variant="outline-danger" className="rounded-3 px-2" onClick={() => handleDelete(b.id)}>
+                                Xóa
+                              </Button>
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -320,7 +320,7 @@ export default function AdminSchedule() {
                   />
                 </Form.Group>
               </Col>
-              
+
               <Col md={6}>
                 <Form.Group>
                   <Form.Label>Dịch vụ <span className="text-danger">*</span></Form.Label>
@@ -440,12 +440,12 @@ export default function AdminSchedule() {
                   <p className="mb-2"><strong>Mã đơn:</strong> {viewedBooking.bookingCode}</p>
                   <p className="mb-2"><strong>Dịch vụ:</strong> {getServiceName(viewedBooking.serviceId)}</p>
                   <p className="mb-2">
-                     <strong>Trạng thái:</strong> {getStatusBadge(viewedBooking.status)}
+                    <strong>Trạng thái:</strong> {getStatusBadge(viewedBooking.status)}
                   </p>
-                  <hr className="my-2"/>
-                  <p className="mb-2"><strong>Thời gian:</strong> <br/>
-                    {new Date(viewedBooking.startTime).toLocaleString("vi-VN")} <br/>
-                     đến {new Date(viewedBooking.endTime).toLocaleString("vi-VN")}
+                  <hr className="my-2" />
+                  <p className="mb-2"><strong>Thời gian:</strong> <br />
+                    {new Date(viewedBooking.startTime).toLocaleString("vi-VN")} <br />
+                    đến {new Date(viewedBooking.endTime).toLocaleString("vi-VN")}
                   </p>
                   <p className="mb-2"><strong>Giá trị đơn:</strong> <span className="text-success fw-bold">{formatCurrency(viewedBooking.pricing?.total || 0)}</span></p>
                   <p className="mb-0"><strong>Ghi chú:</strong> {viewedBooking.note || "Trống"}</p>
@@ -455,46 +455,46 @@ export default function AdminSchedule() {
               {/* Cột thông tin Người giúp việc */}
               <Col md={6}>
                 <div className="p-3 bg-white border rounded-3 h-100 shadow-sm flex-column d-flex">
-                   <h6 className="fw-bold text-success mb-3">Thông tin Người Giúp Việc</h6>
-                   {viewedBooking.assignedHelperId ? (
-                     <>
-                        {(() => {
-                           const h = getUser(viewedBooking.assignedHelperId);
-                           if(!h) return <p>Không tìm thấy thông tin.</p>;
-                           return (
-                             <>
-                                <p className="mb-2"><strong>Họ & Tên:</strong> {h.fullName}</p>
-                                <p className="mb-2"><strong>Tuổi:</strong> {h.age || "Không rõ"}</p>
-                                <p className="mb-2"><strong>Giới tính:</strong> {h.gender || "Không rõ"}</p>
-                                <p className="mb-2"><strong>Số điện thoại:</strong> {h.phone}</p>
-                                <p className="mb-2"><strong>Email:</strong> {h.email}</p>
-                                <p className="mb-0"><strong>Trạng thái Tài khoản:</strong> {h.status}</p>
-                             </>
-                           );
-                        })()}
-                     </>
-                   ) : (
-                      <div className="alert alert-warning m-0 flex-grow-1 d-flex align-items-center justify-content-center">
-                        <span className="text-center">Lịch này hiện chưa phân công Người giúp việc!</span>
-                      </div>
-                   )}
+                  <h6 className="fw-bold text-success mb-3">Thông tin Người Giúp Việc</h6>
+                  {viewedBooking.assignedHelperId ? (
+                    <>
+                      {(() => {
+                        const h = getUser(viewedBooking.assignedHelperId);
+                        if (!h) return <p>Không tìm thấy thông tin.</p>;
+                        return (
+                          <>
+                            <p className="mb-2"><strong>Họ & Tên:</strong> {h.fullName}</p>
+                            <p className="mb-2"><strong>Tuổi:</strong> {h.age || "Không rõ"}</p>
+                            <p className="mb-2"><strong>Giới tính:</strong> {h.gender || "Không rõ"}</p>
+                            <p className="mb-2"><strong>Số điện thoại:</strong> {h.phone}</p>
+                            <p className="mb-2"><strong>Email:</strong> {h.email}</p>
+                            <p className="mb-0"><strong>Trạng thái Tài khoản:</strong> {h.status}</p>
+                          </>
+                        );
+                      })()}
+                    </>
+                  ) : (
+                    <div className="alert alert-warning m-0 flex-grow-1 d-flex align-items-center justify-content-center">
+                      <span className="text-center">Lịch này hiện chưa phân công Người giúp việc!</span>
+                    </div>
+                  )}
                 </div>
               </Col>
 
               {/* Cột Thông tin Khách hàng */}
               <Col md={12}>
                 <div className="p-3 bg-light border rounded-3 shadow-sm">
-                   <h6 className="fw-bold text-secondary mb-3">Thông tin Khách Hàng (Người đặt)</h6>
-                   {(() => {
-                     const c = getUser(viewedBooking.customerId);
-                     if(!c) return <p>Không tìm thấy khách hàng.</p>;
-                     return (
-                         <Row>
-                            <Col sm={6}><p className="mb-2"><strong>Họ & Tên:</strong> {c.fullName}</p></Col>
-                            <Col sm={6}><p className="mb-2"><strong>Số điện thoại:</strong> {c.phone}</p></Col>
-                         </Row>
-                     );
-                   })()}
+                  <h6 className="fw-bold text-secondary mb-3">Thông tin Khách Hàng (Người đặt)</h6>
+                  {(() => {
+                    const c = getUser(viewedBooking.customerId);
+                    if (!c) return <p>Không tìm thấy khách hàng.</p>;
+                    return (
+                      <Row>
+                        <Col sm={6}><p className="mb-2"><strong>Họ & Tên:</strong> {c.fullName}</p></Col>
+                        <Col sm={6}><p className="mb-2"><strong>Số điện thoại:</strong> {c.phone}</p></Col>
+                      </Row>
+                    );
+                  })()}
                 </div>
               </Col>
             </Row>
@@ -505,12 +505,12 @@ export default function AdminSchedule() {
             Đóng
           </Button>
           {viewedBooking && (
-             <Button variant="primary" onClick={() => {
-                setShowViewModal(false);
-                handleShowEdit(viewedBooking);
-             }}>
-               Chỉnh sửa nhanh
-             </Button>
+            <Button variant="primary" onClick={() => {
+              setShowViewModal(false);
+              handleShowEdit(viewedBooking);
+            }}>
+              Chỉnh sửa nhanh
+            </Button>
           )}
         </Modal.Footer>
       </Modal>

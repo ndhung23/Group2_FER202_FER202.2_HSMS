@@ -74,21 +74,6 @@
       "updatedAt": "2026-03-06T20:56:40.277Z",
       "age": 25,
       "gender": "OTHER"
-    },
-    {
-      "id": "9733",
-      "username": "phail98",
-      "fullName": "Nguyen Ha Xuan Duy",
-      "email": "ndhung.work@gmail.com",
-      "phone": "0359928446",
-      "role": "CUSTOMER",
-      "status": "INACTIVE",
-      "passwordHash": "123456",
-      "avatarUrl": "",
-      "createdAt": "2026-03-08T07:08:37.748Z",
-      "updatedAt": "2026-03-08T08:08:46.254Z",
-      "age": 25,
-      "gender": "OTHER"
     }
   ],
   "customerProfiles": [
@@ -119,7 +104,17 @@
         "lng": 106.7009
       },
       "serviceRadiusKm": 10,
+      "IDIdentify": "033205002205",
+      "addressCurrent": "123 Nguyễn Trãi, Phường 1, Quận 1, TP.HCM",
+      "hometown": "123 Nguyễn Trãi, Phường 1, Quận 1, TP.HCM",
+      "phone": "0922222223",
       "hourlyRateMin": 50000,
+      "imageIdentify": [
+        "cccd_front.jpg",
+        "cccd_back.jpg",
+        "birth_certificate.jpg",
+        "face_photo.jpg"
+      ],
       "createdAt": "2026-01-06T08:00:00Z",
       "updatedAt": "2026-01-06T08:00:00Z"
     }
@@ -141,55 +136,231 @@
   ],
   "services": [
     {
-      "id": "1",
-      "code": "Chăm sóc nhà cửa",
-      "name": "Giúp việc theo giờ",
-      "description": "Dọn dẹp, lau chùi nhà cửa",
-      "unit": "HOUR",
-      "basePrice": 60000,
+      "id": "6",
+      "code": "SV001",
+      "name": "Dọn nhà theo giờ 2h",
+      "description": "Dọn dẹp cơ bản: lau sàn, quét nhà, rửa chén, sắp xếp đồ",
+      "unit": "PACKAGE",
+      "basePrice": 180000,
       "minDurationMinutes": 120,
       "isActive": true,
-      "createdAt": "2026-03-08T08:49:27.527Z"
+      "createdAt": "2026-03-08T11:16:35.008Z"
     },
     {
-      "id": "2",
-      "code": "Chăm sóc thú căng",
-      "name": "Giúp việc theo giờ",
-      "description": "Tắm,chơi,cho chó ăn",
-      "unit": "HOUR",
-      "basePrice": 100000,
-      "minDurationMinutes": 360,
+      "id": "7",
+      "code": "SV002",
+      "name": "Dọn nhà theo giờ 3h",
+      "description": "Dọn dẹp nhà cửa tiêu chuẩn cho căn hộ nhỏ",
+      "unit": "PACKAGE",
+      "basePrice": 240000,
+      "minDurationMinutes": 180,
       "isActive": true,
-      "createdAt": "2026-03-08T08:49:08.602Z"
+      "createdAt": "2026-03-08T11:20:24.775Z"
     },
     {
-      "id": "3",
-      "code": "Chăm sóc cây",
-      "name": "Giúp việc theo giờ",
-      "description": "Tươi cây,tỉa cành",
-      "unit": "HOUR",
-      "basePrice": 150000,
+      "id": "8",
+      "code": "SV003",
+      "name": "Dọn nhà theo giờ 4h",
+      "description": "Dọn dẹp nhà cửa toàn diện, phù hợp căn hộ hoặc nhà diện tích trung bình",
+      "unit": "PACKAGE",
+      "basePrice": 300000,
       "minDurationMinutes": 240,
       "isActive": true,
-      "createdAt": "2026-03-08T08:50:26.067Z"
+      "createdAt": "2026-03-08T11:20:54.376Z"
     },
     {
-      "id": "4",
-      "code": "Nấu ăn",
-      "name": "Giúp việc theo giờ",
-      "description": "Nấu ăn ba bữa:sáng,trưa,tối",
-      "unit": "DAY",
+      "id": "9",
+      "code": "SV004",
+      "name": "Tổng vệ sinh nhà dưới 50m2",
+      "description": "Tổng vệ sinh chuyên sâu cho căn hộ hoặc nhà nhỏ dưới 50m2",
+      "unit": "PACKAGE",
+      "basePrice": 500000,
+      "minDurationMinutes": 240,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:23:17.126Z"
+    },
+    {
+      "id": "10",
+      "code": "SV005",
+      "name": "Tổng vệ sinh nhà 50-80m2",
+      "description": "Vệ sinh toàn bộ nhà cho diện tích từ 50 đến 80m2",
+      "unit": "PACKAGE",
+      "basePrice": 700000,
+      "minDurationMinutes": 300,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:25:17.126Z"
+    },
+    {
+      "id": "11",
+      "code": "SV006",
+      "name": "Tổng vệ sinh nhà 80-120m2",
+      "description": "Tổng vệ sinh cho nhà diện tích lớn từ 80 đến 120m2",
+      "unit": "PACKAGE",
+      "basePrice": 900000,
+      "minDurationMinutes": 360,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:27:17.126Z"
+    },
+    {
+      "id": "12",
+      "code": "SV007",
+      "name": "Dọn dẹp sau tiệc",
+      "description": "Thu dọn rác, lau bàn ghế, rửa chén, lau sàn sau tiệc tại nhà",
+      "unit": "PACKAGE",
+      "basePrice": 400000,
+      "minDurationMinutes": 180,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:29:17.126Z"
+    },
+    {
+      "id": "13",
+      "code": "SV008",
+      "name": "Nấu ăn tại nhà",
+      "description": "Chuẩn bị và nấu ăn cho gia đình theo thực đơn cơ bản",
+      "unit": "PACKAGE",
+      "basePrice": 180000,
+      "minDurationMinutes": 120,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:31:17.126Z"
+    },
+    {
+      "id": "14",
+      "code": "SV009",
+      "name": "Đi chợ và nấu ăn",
+      "description": "Hỗ trợ đi chợ mua nguyên liệu và nấu ăn tại nhà",
+      "unit": "PACKAGE",
+      "basePrice": 250000,
+      "minDurationMinutes": 180,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:33:17.126Z"
+    },
+    {
+      "id": "15",
+      "code": "SV010",
+      "name": "Đưa đón trẻ đi học",
+      "description": "Đưa trẻ từ nhà đến trường hoặc từ trường về nhà theo lịch",
+      "unit": "TRIP",
+      "basePrice": 150000,
+      "minDurationMinutes": 60,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:35:17.126Z"
+    },
+    {
+      "id": "16",
+      "code": "SV011",
+      "name": "Trông trẻ tại nhà",
+      "description": "Hỗ trợ chăm sóc trẻ em tại nhà theo giờ",
+      "unit": "HOUR",
+      "basePrice": 120000,
+      "minDurationMinutes": 60,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:37:17.126Z"
+    },
+    {
+      "id": "17",
+      "code": "SV012",
+      "name": "Chăm sóc người cao tuổi",
+      "description": "Hỗ trợ sinh hoạt cơ bản cho người lớn tuổi tại nhà",
+      "unit": "HOUR",
+      "basePrice": 150000,
+      "minDurationMinutes": 60,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:39:17.126Z"
+    },
+    {
+      "id": "18",
+      "code": "SV013",
+      "name": "Giặt quần áo",
+      "description": "Giặt quần áo bằng máy hoặc bằng tay theo nhu cầu",
+      "unit": "PACKAGE",
+      "basePrice": 120000,
+      "minDurationMinutes": 90,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:41:17.126Z"
+    },
+    {
+      "id": "19",
+      "code": "SV014",
+      "name": "Ủi quần áo",
+      "description": "Ủi quần áo gia đình với số lượng cơ bản",
+      "unit": "PACKAGE",
+      "basePrice": 100000,
+      "minDurationMinutes": 60,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:43:17.126Z"
+    },
+    {
+      "id": "20",
+      "code": "SV015",
+      "name": "Giặt và ủi quần áo",
+      "description": "Giặt và ủi toàn bộ quần áo trong một lần thực hiện",
+      "unit": "PACKAGE",
+      "basePrice": 180000,
+      "minDurationMinutes": 120,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:45:17.126Z"
+    },
+    {
+      "id": "21",
+      "code": "SV016",
+      "name": "Vệ sinh máy lạnh",
+      "description": "Làm sạch cơ bản một máy lạnh treo tường",
+      "unit": "ITEM",
+      "basePrice": 150000,
+      "minDurationMinutes": 60,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:47:17.126Z"
+    },
+    {
+      "id": "22",
+      "code": "SV017",
+      "name": "Vệ sinh sofa",
+      "description": "Làm sạch sofa bằng dung dịch chuyên dụng",
+      "unit": "PACKAGE",
+      "basePrice": 250000,
+      "minDurationMinutes": 90,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:49:17.126Z"
+    },
+    {
+      "id": "23",
+      "code": "SV018",
+      "name": "Lau kính chung cư",
+      "description": "Lau kính cửa sổ, cửa ban công và khu vực kính trong căn hộ",
+      "unit": "PACKAGE",
+      "basePrice": 200000,
+      "minDurationMinutes": 90,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:51:17.126Z"
+    },
+    {
+      "id": "24",
+      "code": "SV019",
+      "name": "Sắp xếp nhà cửa",
+      "description": "Tổ chức, phân loại và sắp xếp lại đồ đạc trong nhà",
+      "unit": "PACKAGE",
       "basePrice": 300000,
       "minDurationMinutes": 180,
       "isActive": true,
-      "createdAt": "2026-03-08T08:51:51.626Z"
+      "createdAt": "2026-03-08T11:53:17.126Z"
+    },
+    {
+      "id": "25",
+      "code": "SV020",
+      "name": "Chăm sóc thú cưng",
+      "description": "Cho ăn, vệ sinh và hỗ trợ chăm sóc thú cưng tại nhà",
+      "unit": "HOUR",
+      "basePrice": 120000,
+      "minDurationMinutes": 60,
+      "isActive": true,
+      "createdAt": "2026-03-08T11:55:17.126Z"
     }
   ],
   "serviceSkills": [
     {
       "id": "1",
       "helperProfileId": "1",
-      "serviceId": "1",
+      "serviceId": null,
       "level": "PRO",
       "priceOverride": 70000,
       "isActive": true
@@ -201,7 +372,7 @@
       "id": "1",
       "bookingCode": "BK-20260110-0001",
       "customerId": "2",
-      "serviceId": "1",
+      "serviceId": null,
       "addressId": "1",
       "startTime": "2026-01-10T08:00:00Z",
       "endTime": "2026-01-10T10:00:00Z",
@@ -218,6 +389,118 @@
       },
       "createdAt": "2026-01-08T08:00:00Z",
       "updatedAt": "2026-01-10T10:30:00Z"
+    },
+    {
+      "id": "101",
+      "bookingCode": "BK-20260301-1111",
+      "customerId": "2",
+      "serviceId": "1",
+      "addressId": "1",
+      "startTime": "2026-03-01T08:00:00Z",
+      "endTime": "2026-03-01T10:00:00Z",
+      "durationMinutes": 120,
+      "note": "Clean the house",
+      "status": "COMPLETED",
+      "assignedHelperId": "3",
+      "pricing": {
+        "base": 120000,
+        "surge": 0,
+        "discount": 0,
+        "total": 120000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PAID",
+        "final": "PAID"
+      },
+      "evidenceMedia": [
+        "photo1.jpg"
+      ],
+      "createdAt": "2026-02-28T08:00:00Z",
+      "updatedAt": "2026-03-01T10:30:00Z"
+    },
+    {
+      "id": "102",
+      "bookingCode": "BK-20260302-2222",
+      "customerId": "2",
+      "serviceId": "2",
+      "addressId": "1",
+      "startTime": "2026-03-02T13:00:00Z",
+      "endTime": "2026-03-02T16:00:00Z",
+      "durationMinutes": 180,
+      "note": "Apartment cleaning",
+      "status": "COMPLETED",
+      "assignedHelperId": "3",
+      "pricing": {
+        "base": 300000,
+        "surge": 0,
+        "discount": 0,
+        "total": 300000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PAID",
+        "final": "PAID"
+      },
+      "evidenceMedia": [
+        "photo2.jpg"
+      ],
+      "createdAt": "2026-03-01T08:00:00Z",
+      "updatedAt": "2026-03-02T16:30:00Z"
+    },
+    {
+      "id": "103",
+      "bookingCode": "BK-20260303-3333",
+      "customerId": "4",
+      "serviceId": "3",
+      "addressId": "1",
+      "startTime": "2026-03-03T18:00:00Z",
+      "endTime": "2026-03-03T20:00:00Z",
+      "durationMinutes": 120,
+      "note": "Post-party cleanup",
+      "status": "CANCELLED",
+      "assignedHelperId": "3",
+      "pricing": {
+        "base": 200000,
+        "surge": 0,
+        "discount": 0,
+        "total": 200000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PAID",
+        "final": "PENDING"
+      },
+      "evidenceMedia": [],
+      "createdAt": "2026-03-02T08:00:00Z",
+      "updatedAt": "2026-03-03T18:30:00Z"
+    },
+    {
+      "id": "104",
+      "bookingCode": "BK-20260304-4444",
+      "customerId": "2",
+      "serviceId": "4",
+      "addressId": "1",
+      "startTime": "2026-03-04T07:00:00Z",
+      "endTime": "2026-03-04T09:00:00Z",
+      "durationMinutes": 120,
+      "note": "Babysitting",
+      "status": "COMPLETED",
+      "assignedHelperId": "3",
+      "pricing": {
+        "base": 160000,
+        "surge": 0,
+        "discount": 0,
+        "total": 160000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PAID",
+        "final": "PAID"
+      },
+      "evidenceMedia": [],
+      "createdAt": "2026-03-03T08:00:00Z",
+      "updatedAt": "2026-03-04T09:30:00Z"
     }
   ],
   "bookingAssignments": [],
@@ -245,6 +528,50 @@
       "helperAmount": 96000,
       "status": "PAID",
       "paidAt": "2026-01-10T18:00:00Z"
+    },
+    {
+      "id": "101",
+      "bookingId": "101",
+      "helperId": "3",
+      "grossAmount": 120000,
+      "commissionRate": 0.2,
+      "commissionAmount": 24000,
+      "helperAmount": 96000,
+      "status": "PAID",
+      "paidAt": "2026-03-01T18:00:00Z"
+    },
+    {
+      "id": "102",
+      "bookingId": "102",
+      "helperId": "3",
+      "grossAmount": 300000,
+      "commissionRate": 0.2,
+      "commissionAmount": 60000,
+      "helperAmount": 240000,
+      "status": "PAID",
+      "paidAt": "2026-03-03T18:00:00Z"
+    },
+    {
+      "id": "103",
+      "bookingId": "103",
+      "helperId": "3",
+      "grossAmount": 200000,
+      "commissionRate": 0.2,
+      "commissionAmount": 40000,
+      "helperAmount": 160000,
+      "status": "CANCELLED",
+      "paidAt": null
+    },
+    {
+      "id": "104",
+      "bookingId": "104",
+      "helperId": "3",
+      "grossAmount": 160000,
+      "commissionRate": 0.2,
+      "commissionAmount": 32000,
+      "helperAmount": 128000,
+      "status": "PAID",
+      "paidAt": "2026-03-05T18:00:00Z"
     }
   ],
   "reviews": [
@@ -260,6 +587,55 @@
         "Sạch sẽ"
       ],
       "createdAt": "2026-01-10T11:00:00Z"
+    },
+    {
+      "id": "101",
+      "bookingId": "101",
+      "customerId": "2",
+      "helperId": "3",
+      "rating": 5,
+      "comment": "Tuyệt vời",
+      "tags": [
+        "Sạch sẽ"
+      ],
+      "createdAt": "2026-03-02T11:00:00Z"
+    },
+    {
+      "id": "102",
+      "bookingId": "102",
+      "customerId": "2",
+      "helperId": "3",
+      "rating": 4,
+      "comment": "Làm sạch ban công hơi lâu",
+      "tags": [
+        "Đúng giờ"
+      ],
+      "createdAt": "2026-03-04T11:00:00Z"
+    },
+    {
+      "id": "104",
+      "bookingId": "104",
+      "customerId": "2",
+      "helperId": "3",
+      "rating": 5,
+      "comment": "Bé rất thích cô",
+      "tags": [
+        "Thân thiện",
+        "Nhiệt tình"
+      ],
+      "createdAt": "2026-03-05T11:00:00Z"
+    },
+    {
+      "id": "105",
+      "bookingId": "1",
+      "customerId": "4",
+      "helperId": "3",
+      "rating": 5,
+      "comment": "Rất hài lòng",
+      "tags": [
+        "Kỹ lưỡng"
+      ],
+      "createdAt": "2026-03-08T11:00:00Z"
     }
   ],
   "coupons": [],

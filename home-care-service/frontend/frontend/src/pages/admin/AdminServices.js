@@ -39,7 +39,7 @@ export default function AdminServices() {
   }, []);
 
   const formatCurrency = (value) => {
-    return Number(value).toLocaleString("vi-VN") + " đ";
+    return Number(value).toLocaleString("vi-VN") + "đ";
   };
 
   const handleShowAdd = () => {
@@ -124,7 +124,9 @@ export default function AdminServices() {
       const matchCode = (s.code || "").toLowerCase().includes(keyword);
       const matchName = (s.name || "").toLowerCase().includes(keyword);
       return matchCode || matchName;
-    });
+    })
+    //.sort((a,b) => b.id + a.id)
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [services, search]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -181,12 +183,12 @@ export default function AdminServices() {
                 <Table hover bordered striped className="align-middle mb-0">
                   <thead>
                     <tr style={{ backgroundColor: "#f8fafc" }}>
-                      <th className="py-3">Mã Dịch Vụ</th>
-                      <th className="py-3">Tên Dịch vụ</th>
+                      <th className="py-3">Mã</th>
+                      <th className="py-3">Tên</th>
                       <th className="py-3">Mô tả</th>
                       <th className="py-3 text-center">Đơn vị</th>
-                      <th className="py-3 text-end">Giá cơ bản</th>
-                      <th className="py-3 text-center">Thời gian tối thiểu (phút)</th>
+                      <th className="py-3 text-center">Giá</th>
+                      <th className="py-3 text-center">Thời gian</th>
                       <th className="py-3 text-center">Trạng thái</th>
                       <th className="py-3 text-center">Thao tác</th>
                     </tr>
@@ -199,8 +201,8 @@ export default function AdminServices() {
                           <td className="fw-semibold">{s.name}</td>
                           <td>{s.description}</td>
                           <td className="text-center">{s.unit}</td>
-                          <td className="text-end fw-semibold text-primary">{formatCurrency(s.basePrice)}</td>
-                          <td className="text-center">{s.minDurationMinutes}</td>
+                          <td className="text-start fw-semibold text-primary">{formatCurrency(s.basePrice)}</td>
+                          <td className="text-center">{s.minDurationMinutes}p</td>
                           <td className="text-center">
                             <Badge bg={s.isActive ? "success" : "secondary"} pill className="px-3 py-2">
                               {s.isActive ? "Hoạt động" : "Tạm ngưng"}
@@ -263,7 +265,7 @@ export default function AdminServices() {
                     required
                     value={formData.code}
                     onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                    placeholder="VD: CLEAN_BY_HOUR"
+                    placeholder="VD: ID001"
                   />
                 </Form.Group>
               </Col>
@@ -311,9 +313,8 @@ export default function AdminServices() {
                     onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                   >
                     <option value="HOUR">Theo giờ (HOUR)</option>
-                    <option value="DAY">Theo ngày (DAY)</option>
-                    <option value="SQUARE_METER">Theo m2 (SQUARE_METER)</option>
-                    <option value="ITEM">Theo món (ITEM)</option>
+                    <option value="WEEK">Theo tuần (WEEK)</option>
+                    <option value="MONTH">Theo tháng (MONTH)</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
