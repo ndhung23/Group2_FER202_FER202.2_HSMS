@@ -24,6 +24,11 @@ import HelperDashboard from "./pages/HelperDashboard";
 // Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminServices from "./pages/admin/AdminServices";
+import UserEdit from "./pages/admin/UserEdit";
+import UserView from "./pages/admin/UserView";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminSchedule from "./pages/admin/AdminSchedule";
+import AdminFeedback from "./pages/admin/AdminFeedback";
 
 function App() {
   return (
@@ -35,9 +40,9 @@ function App() {
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
-        <Route path="/change-password" element={<ChangePasswordPage/>}/>
-        
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/change-password" element={<ChangePasswordPage />} />
+
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
 
@@ -57,6 +62,12 @@ function App() {
           <Route element={<RoleRoute allow={["ADMIN"]} />}>
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/services" element={<AdminServices />} />
+            <Route path="/admin/feedback" element={<AdminFeedback />} />
+            <Route path="/admin/reports" element={<AdminReports />} />
+            <Route path="/admin/schedule" element={<AdminSchedule />} />
+            <Route path="/admin/user/new" element={<UserEdit />} />
+            <Route path="/admin/user/edit/:id" element={<UserEdit />} />
+            <Route path="/admin/user/view/:id" element={<UserView />} />
           </Route>
 
         </Route>

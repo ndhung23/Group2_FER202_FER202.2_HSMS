@@ -11,7 +11,9 @@
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-01-01T08:00:00Z",
-      "updatedAt": "2026-01-01T08:00:00Z"
+      "updatedAt": "2026-01-01T08:00:00Z",
+      "age": 25,
+      "gender": "OTHER"
     },
     {
       "id": "2",
@@ -24,7 +26,24 @@
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-01-05T08:00:00Z",
-      "updatedAt": "2026-01-05T08:00:00Z"
+      "updatedAt": "2026-01-05T08:00:00Z",
+      "age": 25,
+      "gender": "OTHER"
+    },
+    {
+      "id": "5",
+      "role": "CUSTOMER",
+      "username": "cus2",
+      "fullName": "Nguyễn Văn A",
+      "phone": "0911111112",
+      "email": "a1@gmail.com",
+      "passwordHash": "123",
+      "avatarUrl": "",
+      "status": "ACTIVE",
+      "createdAt": "2026-01-05T08:00:00Z",
+      "updatedAt": "2026-03-08T08:07:17.864Z",
+      "age": 25,
+      "gender": "OTHER"
     },
     {
       "id": "3",
@@ -37,7 +56,9 @@
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-01-06T08:00:00Z",
-      "updatedAt": "2026-01-06T08:00:00Z"
+      "updatedAt": "2026-01-06T08:00:00Z",
+      "age": 25,
+      "gender": "OTHER"
     },
     {
       "id": "4",
@@ -50,7 +71,24 @@
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-03-06T19:42:49.097Z",
-      "updatedAt": "2026-03-06T20:56:40.277Z"
+      "updatedAt": "2026-03-06T20:56:40.277Z",
+      "age": 25,
+      "gender": "OTHER"
+    },
+    {
+      "id": "9733",
+      "username": "phail98",
+      "fullName": "Nguyen Ha Xuan Duy",
+      "email": "ndhung.work@gmail.com",
+      "phone": "0359928446",
+      "role": "CUSTOMER",
+      "status": "INACTIVE",
+      "passwordHash": "123456",
+      "avatarUrl": "",
+      "createdAt": "2026-03-08T07:08:37.748Z",
+      "updatedAt": "2026-03-08T08:08:46.254Z",
+      "age": 25,
+      "gender": "OTHER"
     }
   ],
   "customerProfiles": [
@@ -104,14 +142,47 @@
   "services": [
     {
       "id": "1",
-      "code": "CLEAN_BY_HOUR",
+      "code": "Chăm sóc nhà cửa",
       "name": "Giúp việc theo giờ",
       "description": "Dọn dẹp, lau chùi nhà cửa",
       "unit": "HOUR",
       "basePrice": 60000,
       "minDurationMinutes": 120,
       "isActive": true,
-      "createdAt": "2026-01-01T08:00:00Z"
+      "createdAt": "2026-03-08T08:49:27.527Z"
+    },
+    {
+      "id": "2",
+      "code": "Chăm sóc thú căng",
+      "name": "Giúp việc theo giờ",
+      "description": "Tắm,chơi,cho chó ăn",
+      "unit": "HOUR",
+      "basePrice": 100000,
+      "minDurationMinutes": 360,
+      "isActive": true,
+      "createdAt": "2026-03-08T08:49:08.602Z"
+    },
+    {
+      "id": "3",
+      "code": "Chăm sóc cây",
+      "name": "Giúp việc theo giờ",
+      "description": "Tươi cây,tỉa cành",
+      "unit": "HOUR",
+      "basePrice": 150000,
+      "minDurationMinutes": 240,
+      "isActive": true,
+      "createdAt": "2026-03-08T08:50:26.067Z"
+    },
+    {
+      "id": "4",
+      "code": "Nấu ăn",
+      "name": "Giúp việc theo giờ",
+      "description": "Nấu ăn ba bữa:sáng,trưa,tối",
+      "unit": "DAY",
+      "basePrice": 300000,
+      "minDurationMinutes": 180,
+      "isActive": true,
+      "createdAt": "2026-03-08T08:51:51.626Z"
     }
   ],
   "serviceSkills": [

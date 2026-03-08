@@ -13,7 +13,6 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     if (!username || !password) {
-      //alert("Vui lòng nhập đầy đủ username và password");
       setError("Vui lòng nhập đầy đủ username và password");
       return;
     }
@@ -26,18 +25,21 @@ export default function LoginPage() {
       });
       const users = res.data;
       if (!users || users.length === 0) {
-        //alert("Sai username hoặc password");
         setError("Sai tài khoản hoặc mật khẩu.");
         return;
       }
       const user = users[0];
-      setAuth("mock-token", user.role);
+      if (user.status === "INACTIVE") {
+        setError("Tài khoản của bạn đã bị cấm hoạt động. Vui lòng liên hệ quản trị viên.");
+        return;
+      }
+      setAuth("mock-token", user.role, user);
       if (user.role === "ADMIN") navigate("/admin");
       else if (user.role === "HELPER") navigate("/helper");
       else navigate("/customer");
     } catch (error) {
       console.error(error);
-      alert("Có lỗi khi đăng nhập");
+      setError("Có lỗi khi đăng nhập");
     }
   };
 
@@ -104,7 +106,7 @@ export default function LoginPage() {
                     <Link to="/forgot-password" className="text-decoration-none">
                       Quên mật khẩu?
                     </Link>
-                    
+
                   </Button>
                 </Col>
               </Row>
