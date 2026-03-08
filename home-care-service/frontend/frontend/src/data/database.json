@@ -16,32 +16,17 @@
       "gender": "OTHER"
     },
     {
-      "id": "2",
-      "role": "CUSTOMER",
-      "username": "cus1",
-      "fullName": "Nguyễn Văn A",
-      "phone": "0911111111",
-      "email": "a@gmail.com",
-      "passwordHash": "123",
-      "avatarUrl": "",
-      "status": "ACTIVE",
-      "createdAt": "2026-01-05T08:00:00Z",
-      "updatedAt": "2026-01-05T08:00:00Z",
-      "age": 25,
-      "gender": "OTHER"
-    },
-    {
       "id": "5",
       "role": "CUSTOMER",
       "username": "cus2",
       "fullName": "Nguyễn Văn A",
       "phone": "0911111112",
-      "email": "a1@gmail.com",
+      "email": "ndhung.work@gmail.com",
       "passwordHash": "123",
       "avatarUrl": "",
       "status": "ACTIVE",
       "createdAt": "2026-01-05T08:00:00Z",
-      "updatedAt": "2026-03-08T08:07:17.864Z",
+      "updatedAt": "2026-03-08T15:45:06.257Z",
       "age": 25,
       "gender": "OTHER"
     },
@@ -79,7 +64,7 @@
   "customerProfiles": [
     {
       "id": "1",
-      "userId": "2",
+      "userId": null,
       "defaultAddressId": "1",
       "note": "Nhà có thú cưng",
       "createdAt": "2026-01-05T08:00:00Z",
@@ -122,7 +107,7 @@
   "addresses": [
     {
       "id": "1",
-      "userId": "2",
+      "userId": null,
       "label": "Nhà riêng",
       "fullAddress": "123 Nguyễn Trãi",
       "ward": "Phường 1",
@@ -144,7 +129,8 @@
       "basePrice": 180000,
       "minDurationMinutes": 120,
       "isActive": true,
-      "createdAt": "2026-03-08T11:16:35.008Z"
+      "createdAt": "2026-03-08T11:16:35.008Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "7",
@@ -155,7 +141,8 @@
       "basePrice": 240000,
       "minDurationMinutes": 180,
       "isActive": true,
-      "createdAt": "2026-03-08T11:20:24.775Z"
+      "createdAt": "2026-03-08T11:20:24.775Z",
+      "imageUrl": "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "8",
@@ -166,7 +153,8 @@
       "basePrice": 300000,
       "minDurationMinutes": 240,
       "isActive": true,
-      "createdAt": "2026-03-08T11:20:54.376Z"
+      "createdAt": "2026-03-08T11:20:54.376Z",
+      "imageUrl": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "9",
@@ -177,7 +165,8 @@
       "basePrice": 500000,
       "minDurationMinutes": 240,
       "isActive": true,
-      "createdAt": "2026-03-08T11:23:17.126Z"
+      "createdAt": "2026-03-08T11:23:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1563453392212-326f5e854473?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "10",
@@ -188,7 +177,8 @@
       "basePrice": 700000,
       "minDurationMinutes": 300,
       "isActive": true,
-      "createdAt": "2026-03-08T11:25:17.126Z"
+      "createdAt": "2026-03-08T11:25:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "11",
@@ -199,7 +189,8 @@
       "basePrice": 900000,
       "minDurationMinutes": 360,
       "isActive": true,
-      "createdAt": "2026-03-08T11:27:17.126Z"
+      "createdAt": "2026-03-08T11:27:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "12",
@@ -210,7 +201,8 @@
       "basePrice": 400000,
       "minDurationMinutes": 180,
       "isActive": true,
-      "createdAt": "2026-03-08T11:29:17.126Z"
+      "createdAt": "2026-03-08T11:29:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "13",
@@ -221,7 +213,8 @@
       "basePrice": 180000,
       "minDurationMinutes": 120,
       "isActive": true,
-      "createdAt": "2026-03-08T11:31:17.126Z"
+      "createdAt": "2026-03-08T11:31:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "14",
@@ -232,7 +225,8 @@
       "basePrice": 250000,
       "minDurationMinutes": 180,
       "isActive": true,
-      "createdAt": "2026-03-08T11:33:17.126Z"
+      "createdAt": "2026-03-08T11:33:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "15",
@@ -243,7 +237,8 @@
       "basePrice": 150000,
       "minDurationMinutes": 60,
       "isActive": true,
-      "createdAt": "2026-03-08T11:35:17.126Z"
+      "createdAt": "2026-03-08T11:35:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "16",
@@ -254,7 +249,8 @@
       "basePrice": 120000,
       "minDurationMinutes": 60,
       "isActive": true,
-      "createdAt": "2026-03-08T11:37:17.126Z"
+      "createdAt": "2026-03-08T11:37:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "17",
@@ -265,7 +261,8 @@
       "basePrice": 150000,
       "minDurationMinutes": 60,
       "isActive": true,
-      "createdAt": "2026-03-08T11:39:17.126Z"
+      "createdAt": "2026-03-08T11:39:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "18",
@@ -276,7 +273,8 @@
       "basePrice": 120000,
       "minDurationMinutes": 90,
       "isActive": true,
-      "createdAt": "2026-03-08T11:41:17.126Z"
+      "createdAt": "2026-03-08T11:41:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "19",
@@ -287,7 +285,8 @@
       "basePrice": 100000,
       "minDurationMinutes": 60,
       "isActive": true,
-      "createdAt": "2026-03-08T11:43:17.126Z"
+      "createdAt": "2026-03-08T11:43:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "20",
@@ -298,7 +297,8 @@
       "basePrice": 180000,
       "minDurationMinutes": 120,
       "isActive": true,
-      "createdAt": "2026-03-08T11:45:17.126Z"
+      "createdAt": "2026-03-08T11:45:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "21",
@@ -309,7 +309,8 @@
       "basePrice": 150000,
       "minDurationMinutes": 60,
       "isActive": true,
-      "createdAt": "2026-03-08T11:47:17.126Z"
+      "createdAt": "2026-03-08T11:47:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "22",
@@ -320,7 +321,8 @@
       "basePrice": 250000,
       "minDurationMinutes": 90,
       "isActive": true,
-      "createdAt": "2026-03-08T11:49:17.126Z"
+      "createdAt": "2026-03-08T11:49:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "23",
@@ -331,7 +333,8 @@
       "basePrice": 200000,
       "minDurationMinutes": 90,
       "isActive": true,
-      "createdAt": "2026-03-08T11:51:17.126Z"
+      "createdAt": "2026-03-08T11:51:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "24",
@@ -342,7 +345,8 @@
       "basePrice": 300000,
       "minDurationMinutes": 180,
       "isActive": true,
-      "createdAt": "2026-03-08T11:53:17.126Z"
+      "createdAt": "2026-03-08T11:53:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     },
     {
       "id": "25",
@@ -353,7 +357,8 @@
       "basePrice": 120000,
       "minDurationMinutes": 60,
       "isActive": true,
-      "createdAt": "2026-03-08T11:55:17.126Z"
+      "createdAt": "2026-03-08T11:55:17.126Z",
+      "imageUrl": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1000&auto=format&fit=crop"
     }
   ],
   "serviceSkills": [
@@ -501,6 +506,34 @@
       "evidenceMedia": [],
       "createdAt": "2026-03-03T08:00:00Z",
       "updatedAt": "2026-03-04T09:30:00Z"
+    },
+    {
+      "id": "1772984934783",
+      "bookingCode": "BK-R20919",
+      "customerId": "2",
+      "serviceId": "9",
+      "addressId": "1",
+      "fullAddress": "123 Pho Hue, Ha Noi",
+      "startTime": "2026-03-22T10:48:00Z",
+      "endTime": "2026-03-22T14:48:00.000Z",
+      "durationMinutes": 240,
+      "note": "",
+      "status": "CANCELLED",
+      "assignedHelperId": "3",
+      "pricing": {
+        "base": 500000,
+        "surge": 0,
+        "discount": 0,
+        "total": 500000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PAID",
+        "final": "PENDING"
+      },
+      "evidenceMedia": [],
+      "createdAt": "2026-03-08T15:48:54.784Z",
+      "updatedAt": "2026-03-08T16:31:05.734Z"
     }
   ],
   "bookingAssignments": [],

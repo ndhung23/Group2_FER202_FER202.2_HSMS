@@ -4,7 +4,6 @@ import axios from 'axios';
 import HelperSidebar from './components/HelperSidebar';
 
 export default function HelperIncome() {
-  const [helper, setHelper] = useState(null);
   const [payouts, setPayouts] = useState([]);
 
   const [search, setSearch] = useState("");
@@ -18,7 +17,6 @@ export default function HelperIncome() {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      setHelper(parsedUser);
       fetchData(parsedUser.id);
     }
   }, []);

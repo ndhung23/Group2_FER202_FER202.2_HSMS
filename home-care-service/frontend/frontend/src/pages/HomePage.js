@@ -1,7 +1,45 @@
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Form, Button, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import imageHomeCare from "../assets/imageHomeCare.jpg";
+
 export default function HomePage() {
+  const [services, setServices] = useState([]);
+  const [helpers, setHelpers] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [resServices, resHelpers, resReviews] = await Promise.all([
+        axios.get("http://localhost:9999/services?_limit=3"),
+        axios.get("http://localhost:9999/users?role=HELPER"),
+        axios.get("http://localhost:9999/reviews")
+      ]);
+
+      setServices(resServices.data || []);
+
+      // Compute helper ratings
+      const helpersData = resHelpers.data || [];
+      const reviews = resReviews.data || [];
+
+      const helpersWithStats = helpersData.map(h => {
+        const hReviews = reviews.filter(r => String(r.helperId) === String(h.id));
+        const avg = hReviews.length > 0
+          ? (hReviews.reduce((sum, r) => sum + r.rating, 0) / hReviews.length).toFixed(1)
+          : "5.0"; // Default
+        return { ...h, rating: avg };
+      }).sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating)).slice(0, 3); // Get top 3
+
+      setHelpers(helpersWithStats);
+    } catch (error) {
+      console.error("Error fetching homepage data:", error);
+    }
+  };
+
   return (
     <>
       <section className="hj-hero">
@@ -32,9 +70,9 @@ export default function HomePage() {
                           <option value="" disabled>
                             Chọn dịch vụ
                           </option>
-                          <option>Dọn dẹp nhà cửa</option>
-                          <option>Giặt ủi</option>
-                          <option>Nấu ăn gia đình</option>
+                          {services.map(s => (
+                            <option key={s.id} value={s.id}>{s.name}</option>
+                          ))}
                         </Form.Select>
                       </Form.Group>
                     </Col>
@@ -68,8 +106,8 @@ export default function HomePage() {
 
             <Col lg={6}>
               <img src={imageHomeCare} alt="HomeCare"
-                style={{paddingTop:"110px", width: "100%", height: "auto" }}/>
-                {/* style={{ width: "100%", height: "auto" } */}
+                style={{ paddingTop: "110px", width: "100%", height: "auto" }} />
+              {/* style={{ width: "100%", height: "auto" } */}
             </Col>
           </Row>
         </Container>
@@ -125,28 +163,24 @@ export default function HomePage() {
               <div className="hj-muted">Những người giúp việc có đánh giá cao nhất trong tháng qua.</div>
             </Col>
             <Col xs="auto">
-              <Button as={Link} to="/services" variant="link" className="text-decoration-none fw-semibold">
+              <Button as={Link} to="/helpers" variant="link" className="text-decoration-none fw-semibold">
                 Xem tất cả →
               </Button>
             </Col>
           </Row>
 
           <Row className="g-3 g-lg-4">
-            {[
-              { name: "Nguyễn Thị Hoa", rating: "4.9", tags: ["Dọn dẹp", "Nấu ăn"] },
-              { name: "Trần Văn Nam", rating: "4.8", tags: ["Vệ sinh máy lạnh", "Sửa chữa điện nước"] },
-              { name: "Lê Thị Mai", rating: "5.0", tags: ["Trông trẻ", "Dọn dẹp"] }
-            ].map((h) => (
-              <Col md={4} key={h.name}>
+            {helpers.map((h) => (
+              <Col md={4} key={h.id}>
                 <Card className="hj-card h-100">
                   <Card.Body>
                     <div className="d-flex justify-content-between align-items-start">
                       <div className="d-flex align-items-center gap-3">
-                        <div className="hj-avatar">{h.name.split(" ").slice(-1)[0].slice(0, 1)}</div>
+                        <div className="hj-avatar">{h.fullName.split(" ").slice(-1)[0].slice(0, 1).toUpperCase()}</div>
                         <div>
-                          <div className="fw-bold">{h.name}</div>
+                          <div className="fw-bold">{h.fullName}</div>
                           <div className="hj-muted" style={{ fontSize: 13 }}>
-                            Kinh nghiệm: 3-5 năm (mock)
+                            Kinh nghiệm: {h.age ? Math.max(1, h.age - 20) : "2"} năm
                           </div>
                         </div>
                       </div>
@@ -157,11 +191,8 @@ export default function HomePage() {
                     </div>
 
                     <div className="d-flex flex-wrap gap-2 mt-3">
-                      {h.tags.map((tag) => (
-                        <Badge bg="light" text="dark" className="border" key={tag}>
-                          {tag}
-                        </Badge>
-                      ))}
+                      <Badge bg="light" text="dark" className="border">Chuyên nghiệp</Badge>
+                      <Badge bg="light" text="dark" className="border">Nhiệt tình</Badge>
                     </div>
 
                     <Button className="w-100 rounded-3 mt-4" variant="outline-primary">
@@ -183,12 +214,8 @@ export default function HomePage() {
           </div>
 
           <Row className="g-3 g-lg-4">
-            {[
-              { title: "Dọn dẹp nhà cửa", desc: "Quét dọn, lau chùi, sắp xếp đồ đạc cơ bản." },
-              { title: "Giặt ủi", desc: "Giặt, phơi và gấp quần áo chuyên nghiệp." },
-              { title: "Nấu ăn gia đình", desc: "Chuẩn bị bữa cơm ngon, hợp vệ sinh." }
-            ].map((s) => (
-              <Col md={4} key={s.title}>
+            {services.map((s) => (
+              <Col md={4} key={s.id}>
                 <Card className="hj-card h-100">
                   <Card.Body>
                     <div className="d-flex align-items-center gap-3">
@@ -196,12 +223,15 @@ export default function HomePage() {
                         ✓
                       </div>
                       <div>
-                        <div className="fw-bold">{s.title}</div>
-                        <div className="hj-muted">{s.desc}</div>
+                        <div className="fw-bold">{s.name}</div>
+                        <div className="hj-muted">{s.description ? s.description.substring(0, 60) + "..." : "Dịch vụ chất lượng cao"}</div>
                       </div>
                     </div>
-                    <Button as={Link} to="/services" variant="link" className="text-decoration-none fw-semibold px-0 mt-3">
-                      Xem chi tiết →
+                    <div className="mt-2 text-primary fw-bold">
+                      {Number(s.basePrice).toLocaleString('vi-VN')} đ / {s.durationMinutes} phút
+                    </div>
+                    <Button as={Link} to="/customer/bookings/new" variant="link" className="text-decoration-none fw-semibold px-0 mt-2">
+                      Đặt lịch ngay →
                     </Button>
                   </Card.Body>
                 </Card>
@@ -218,13 +248,13 @@ export default function HomePage() {
               Sẵn sàng để ngôi nhà của bạn tỏa sáng?
             </h2>
             <div style={{ opacity: 0.9 }}>
-              Tham gia cùng 50,000+ gia đình đã tin tưởng sử dụng HomeCare mỗi ngày (UI khung).
+              Tham gia cùng 50,000+ gia đình đã tin tưởng sử dụng HomeCare mỗi ngày.
             </div>
             <div className="d-flex flex-column flex-sm-row justify-content-center gap-2 mt-4">
               <Button as={Link} to="/customer/bookings/new" variant="light" className="rounded-pill px-4">
                 Đặt lịch ngay bây giờ
               </Button>
-              <Button as={Link} to="/register" variant="warning" className="rounded-pill px-4">
+              <Button as={Link} to="/error" variant="warning" className="rounded-pill px-4">
                 Đăng ký thành viên
               </Button>
             </div>

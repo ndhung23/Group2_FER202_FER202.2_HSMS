@@ -56,7 +56,7 @@ export default function HelperSidebar() {
             className={getButtonClass("/helper/schedule/weekly")}
             onClick={() => navigate("/helper/schedule/weekly")}
           >
-            Lịch làm việc hàng tuần
+            Lịch làm việc hàng tháng
           </Button>
           <Button
             variant="light"

@@ -4,7 +4,6 @@ import axios from 'axios';
 import HelperSidebar from './components/HelperSidebar';
 
 export default function HelperReviews() {
-  const [helper, setHelper] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [users, setUsers] = useState([]);
 
@@ -15,7 +14,6 @@ export default function HelperReviews() {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      setHelper(parsedUser);
       fetchData(parsedUser.id);
     }
   }, []);
@@ -46,9 +44,6 @@ export default function HelperReviews() {
   const avgRating = reviews.length > 0 
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : "0.0";
-    
-  const count5Stars = reviews.filter(r => r.rating === 5).length;
-  const count4Stars = reviews.filter(r => r.rating === 4).length;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -131,7 +126,8 @@ export default function HelperReviews() {
                           {r.tags && r.tags.length > 0 && (
                             <div className="d-flex gap-1 flex-wrap mt-1">
                               {r.tags.map((t, i) => (
-                                 <Badge key={i} bg="primary" bgOpacity={10} text="primary" pill className="fw-normal border border-primary px-2 py-1" style={{ fontSize: "11px" }}>
+                                 <Badge key={i} bg="success" bgOpacity={10} text="light"
+                                  pill className="fw-normal border border-primary px-2 py-1" style={{ fontSize: "11px" }}>
                                     ✓ {t}
                                  </Badge>
                               ))}

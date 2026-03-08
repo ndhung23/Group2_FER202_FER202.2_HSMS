@@ -36,21 +36,17 @@ export default function AppNavbar() {
             <Nav.Link className="hj-nav-link" as={NavLink} to="/services">
               Dịch vụ
             </Nav.Link>
-            <Nav.Link
+            {/* <Nav.Link
               className="hj-nav-link"
               as="a"
               href="#blog"
               onClick={(e) => e.preventDefault()}
             >
-              Blog
-            </Nav.Link>
+              Người giúp việc
+            </Nav.Link> */}
             <Nav.Link
-              className="hj-nav-link"
-              as="a"
-              href="#support"
-              onClick={(e) => e.preventDefault()}
-            >
-              Hỗ trợ
+              className="hj-nav-link" as={NavLink} to="/helpers" >
+              Người giúp việc
             </Nav.Link>
           </Nav>
 
@@ -85,8 +81,8 @@ export default function AppNavbar() {
                   style={{ cursor: "pointer" }}
                   onClick={() => {
                     if (role === "ADMIN") navigate("/admin");
-                    else if (role === "HELPER") navigate("/helper");
-                    else navigate("/customer");
+                    else if (role === "HELPER") navigate("/helper/profile");
+                    else navigate("/customer/profile");
                   }}
                 >
                   {user?.avatarUrl ? (

@@ -91,6 +91,10 @@ function AdminDashboard() {
     (b) => b.status === "COMPLETED"
   ).length;
 
+  const totalPendingBooking = bookings.filter(
+    (b) => b.status === "PENDING" || b.status === "PENDING_DEPOSIT"
+  ).length;
+
   const grossAmount = bookings
     .filter((b) => b.status === "COMPLETED")
     .reduce((sum, b) => sum + (b.pricing?.total || 0), 0);
@@ -161,8 +165,31 @@ function AdminDashboard() {
             </div>
           </div>
 
-          <Row className="g-3 mb-4">
-            <Col md={6} lg={3}>
+          <Row className="g-3 mb-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5">
+            <Col>
+              <Card className="border-0 shadow-sm rounded-4 h-100">
+                <Card.Body>
+                  <div style={{ color: "#64748b", fontSize: "14px" }}>
+                    Chờ duyệt
+                  </div>
+                  <div
+                    className="fw-bold fs-3 mt-2"
+                    style={{ color: "#ea580c" }}
+                  >
+                    {totalPendingBooking}
+                  </div>
+                  <div
+                    className="mt-2 text-decoration-none cursor-pointer"
+                    style={{ fontSize: "13px", color: "#f97316", cursor: 'pointer' }}
+                    onClick={() => navigate('/admin/bookings')}
+                  >
+                    Đơn PENDING ➜
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            <Col>
               <Card className="border-0 shadow-sm rounded-4 h-100">
                 <Card.Body>
                   <div style={{ color: "#64748b", fontSize: "14px" }}>
@@ -184,7 +211,7 @@ function AdminDashboard() {
               </Card>
             </Col>
 
-            <Col md={6} lg={3}>
+            <Col>
               <Card className="border-0 shadow-sm rounded-4 h-100">
                 <Card.Body>
                   <div style={{ color: "#64748b", fontSize: "14px" }}>
@@ -206,7 +233,7 @@ function AdminDashboard() {
               </Card>
             </Col>
 
-            <Col md={6} lg={3}>
+            <Col>
               <Card className="border-0 shadow-sm rounded-4 h-100">
                 <Card.Body>
                   <div style={{ color: "#64748b", fontSize: "14px" }}>
@@ -228,7 +255,7 @@ function AdminDashboard() {
               </Card>
             </Col>
 
-            <Col md={6} lg={3}>
+            <Col>
               <Card className="border-0 shadow-sm rounded-4 h-100">
                 <Card.Body>
                   <div style={{ color: "#64748b", fontSize: "14px" }}>
