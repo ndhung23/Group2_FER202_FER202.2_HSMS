@@ -1,15 +1,22 @@
-import { Navbar, Nav, Container, Button, Badge } from "react-bootstrap";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
-import { getToken, getRole, logout } from "../utils/auth";
+import { getToken, getRole, getUser, logout } from "../utils/auth";
 
 export default function AppNavbar() {
   const navigate = useNavigate();
   const token = getToken();
   const role = getRole();
+  const user = getUser();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const getRoleLabel = (r) => {
+    if (r === "ADMIN") return "Quản trị viên";
+    if (r === "HELPER") return "Người giúp việc";
+    return "Khách hàng";
   };
 
   return (
@@ -73,23 +80,41 @@ export default function AppNavbar() {
               </>
             ) : (
               <>
-                <Badge bg="light" text="dark" className="border">
-                  Role: <span className="fw-semibold">{role}</span>
-                </Badge>
-                <Button
-                  size="sm"
-                  variant="outline-secondary"
-                  className="rounded-pill px-3"
+                <div
+                  className="d-flex align-items-center gap-2 me-3 pe-3 border-end"
+                  style={{ cursor: "pointer" }}
                   onClick={() => {
                     if (role === "ADMIN") navigate("/admin");
                     else if (role === "HELPER") navigate("/helper");
                     else navigate("/customer");
                   }}
                 >
-                  Dashboard
-                </Button>
-                <Button size="sm" variant="dark" className="rounded-pill px-3" onClick={handleLogout}>
-                  Logout
+                  {user?.avatarUrl ? (
+                    <img
+                      src={user.avatarUrl}
+                      alt="avatar"
+                      style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div
+                      className="d-flex align-items-center justify-content-center bg-primary text-white fw-bold"
+                      style={{ width: "40px", height: "40px", borderRadius: "50%", fontSize: "16px" }}
+                    >
+                      {user?.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
+                    </div>
+                  )}
+                  <div className="d-flex flex-column justify-content-center">
+                    <span className="fw-semibold lh-1" style={{ color: "#1e293b", fontSize: "15px" }}>
+                      {user?.fullName || "User"}
+                    </span>
+                    <span className="lh-1 mt-1" style={{ color: "#64748b", fontSize: "12px" }}>
+                      {getRoleLabel(role)}
+                    </span>
+                  </div>
+                </div>
+
+                <Button size="sm" variant="outline-danger" className="rounded-pill px-3 fw-semibold" onClick={handleLogout}>
+                  Đăng xuất
                 </Button>
               </>
             )}

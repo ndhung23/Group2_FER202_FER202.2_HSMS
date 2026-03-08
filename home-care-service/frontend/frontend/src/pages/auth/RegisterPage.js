@@ -7,7 +7,8 @@ function RegisterPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     username: "", firstName: "", lastName: "",
-    email: "", phone: "", password: "", confirmPassword: ""
+    email: "", phone: "", password: "", confirmPassword: "",
+    age: "", gender: "OTHER"
   });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState("");
@@ -58,6 +59,11 @@ function RegisterPage() {
         if (value !== currentForm.password) {
           return "Mật khẩu nhập lại không khớp.";
         } return "";
+      case "age":
+        if (String(value).trim() === "") return "Tuổi không được để trống.";
+        if (isNaN(value) || (parseInt(value) < 12 && parseInt(value) < 120)) {
+          return "Tuổi phải lớn hơn hoặc bằng 12.";
+        } return "";
       default:
         return "";
     }
@@ -87,7 +93,7 @@ function RegisterPage() {
             updatedForm
           )
         }
-        :{})
+        : {})
     }));
   };
 
@@ -123,6 +129,7 @@ function RegisterPage() {
         phone: form.phone.trim(), email: form.email.trim(),
         passwordHash: form.password,
         avatarUrl: "", status: "ACTIVE",
+        age: parseInt(form.age), gender: form.gender,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }
@@ -130,12 +137,13 @@ function RegisterPage() {
       setSuccess("Đăng ký thành công. Đang chuyển sang trang đăng nhập...");
       setForm({
         username: "", firstName: "", lastName: "",
-        email: "", phone: "", password: "",confirmPassword: ""
+        email: "", phone: "", password: "", confirmPassword: "",
+        age: "", gender: "OTHER"
       });
       setTimeout(() => {
-        navigate("/login",{
-          state:{
-            username:form.username
+        navigate("/login", {
+          state: {
+            username: form.username
           }
         })
       }, 1500)
@@ -236,19 +244,54 @@ function RegisterPage() {
                 </Form.Control.Feedback>
               </Form.Group>
 
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label>Số điện thoại</Form.Label>
+                    <Form.Control
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      placeholder="0901234567"
+                      isInvalid={!!errors.phone}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.phone}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label>Tuổi</Form.Label>
+                    <Form.Control
+                      name="age"
+                      type="number"
+                      value={form.age}
+                      onChange={handleChange}
+                      placeholder="Nhập tuổi"
+                      isInvalid={!!errors.age}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.age}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              </Row>
+
               <Form.Group className="mb-3">
-                <Form.Label>Số điện thoại</Form.Label>
-                <Form.Control
-                  name="phone"
-                  value={form.phone}
+                <Form.Label>Giới tính</Form.Label>
+                <Form.Select
+                  name="gender"
+                  value={form.gender}
                   onChange={handleChange}
-                  placeholder="0901234567"
-                  isInvalid={!!errors.phone}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.phone}
-                </Form.Control.Feedback>
+                >
+                  <option value="MALE">Nam</option>
+                  <option value="FEMALE">Nữ</option>
+                  <option value="OTHER">Khác</option>
+                </Form.Select>
               </Form.Group>
 
               <Form.Group className="mb-4">

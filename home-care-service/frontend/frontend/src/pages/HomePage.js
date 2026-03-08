@@ -1,6 +1,6 @@
 import { Container, Row, Col, Card, Form, Button, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
+import imageHomeCare from "../assets/imageHomeCare.jpg";
 export default function HomePage() {
   return (
     <>
@@ -67,7 +67,9 @@ export default function HomePage() {
             </Col>
 
             <Col lg={6}>
-              <div className="hj-hero-image" />
+              <img src={imageHomeCare} alt="HomeCare"
+                style={{paddingTop:"110px", width: "100%", height: "auto" }}/>
+                {/* style={{ width: "100%", height: "auto" } */}
             </Col>
           </Row>
         </Container>
