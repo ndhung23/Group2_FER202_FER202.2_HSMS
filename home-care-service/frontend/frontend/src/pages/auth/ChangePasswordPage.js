@@ -1,18 +1,29 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, Form, Button, Alert } from "react-bootstrap";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function ChangePasswordPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userId = location.state?.userId;
-  const username = location.state?.username;
-  const email = location.state?.email;
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+     const storedStr = localStorage.getItem('user');
+     if(storedStr) setCurrentUser(JSON.parse(storedStr));
+  }, []);
+
+  const userId = location.state?.userId || currentUser?.id;
+  const username = location.state?.username || currentUser?.username;
+  const email = location.state?.email || currentUser?.email;
+  
+  // Nếu không có user trong localStorage nhưng có state truyền sang -> Mode lấy lại mật khẩu bằng OTP
+  const isForgotPasswordMode = !currentUser && !!location.state?.email;
 
   const [form, setForm] = useState({
     otp: "",
+    oldPassword: "",
     password: "",
     confirmPassword: ""
   });
@@ -24,8 +35,12 @@ function ChangePasswordPage() {
   const validateChangePassword = (name, value, currentForm = form) => {
     switch (name) {
       case "otp":
-        if (!value) return "Vui lòng nhập mã OTP.";
-        if (!/^\d{6}$/.test(value)) return "OTP phải gồm 6 chữ số.";
+        if (isForgotPasswordMode && !value) return "Vui lòng nhập mã OTP.";
+        if (isForgotPasswordMode && value.length !== 6) return "Mã OTP phải có 6 chữ số.";
+        return "";
+
+      case "oldPassword":
+        if (!isForgotPasswordMode && !value) return "Vui lòng nhập mật khẩu hiện tại.";
         return "";
 
       case "password":
@@ -39,7 +54,7 @@ function ChangePasswordPage() {
         return "";
 
       case "confirmPassword":
-        if (!value) return "Vui lòng nhập lại mật khẩu.";
+        if (!value) return "Vui lòng nhập lại mật khẩu mới.";
         if (value !== currentForm.password) {
           return "Mật khẩu nhập lại không khớp.";
         }
@@ -58,8 +73,8 @@ function ChangePasswordPage() {
       if (error) newErrors[key] = error;
     });
 
-    if (!userId || !email) {
-      newErrors.general = "Phiên đổi mật khẩu không hợp lệ. Vui lòng thực hiện lại.";
+    if (!userId) {
+      newErrors.general = "Phiên đổi mật khẩu không hợp lệ (Không tìm thấy ID người dùng). Vui lòng đăng nhập lại.";
     }
 
     setErrors(newErrors);
@@ -68,18 +83,14 @@ function ChangePasswordPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    const finalValue =
-      name === "otp" ? value.replace(/\D/g, "").slice(0, 6) : value;
-
-    const updatedForm = { ...form, [name]: finalValue };
+    const updatedForm = { ...form, [name]: value };
 
     setForm(updatedForm);
     setSuccess("");
 
     setErrors((prev) => ({
       ...prev,
-      [name]: validateChangePassword(name, finalValue, updatedForm),
+      [name]: validateChangePassword(name, value, updatedForm),
       ...(name === "password" || name === "confirmPassword"
         ? {
             confirmPassword: validateChangePassword(
@@ -102,25 +113,49 @@ function ChangePasswordPage() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/verify-otp", {
-        email,
-        otp: form.otp
-      });
+      if (isForgotPasswordMode) {
+        // Verify OTP
+        try {
+          await axios.post("http://localhost:5000/verify-otp", {
+            email: email,
+            otp: form.otp
+          });
+        } catch (otpErr) {
+          setErrors((prev) => ({ ...prev, otp: "Mã OTP không đúng hoặc đã hết hạn." }));
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Verify old password
+        const res = await axios.get(`http://localhost:9999/users/${userId}`);
+        if (res.data.passwordHash !== form.oldPassword) {
+           setErrors((prev) => ({ ...prev, oldPassword: "Mật khẩu hiện tại không đúng. Vui lòng thử lại." }));
+           setLoading(false);
+           return;
+        }
+      }
 
+      // Update new password
       await axios.patch(`http://localhost:9999/users/${userId}`, {
         passwordHash: form.password,
         updatedAt: new Date().toISOString()
       });
 
-      setSuccess("Đổi mật khẩu thành công. Đang chuyển sang trang đăng nhập...");
+      setSuccess("Đổi mật khẩu thành công! Đang chuyển hướng...");
 
       setForm({
         otp: "",
+        oldPassword: "",
         password: "",
         confirmPassword: ""
       });
 
       setTimeout(() => {
+        // Log out user for safety to re-login with new password
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('role');
+
         navigate("/login", {
           state: { username }
         });
@@ -129,7 +164,7 @@ function ChangePasswordPage() {
       console.error(err);
       setErrors((prev) => ({
         ...prev,
-        general: err?.response?.data?.message || "Có lỗi xảy ra khi đổi mật khẩu."
+        general: err?.response?.data?.message || "Có lỗi mạng xảy ra khi đổi mật khẩu."
       }));
     } finally {
       setLoading(false);
@@ -137,48 +172,70 @@ function ChangePasswordPage() {
   };
 
   return (
-    <div className="d-flex justify-content-center" style={{ minHeight: "70vh" }}>
+    <div className="d-flex justify-content-center" style={{ minHeight: "75vh", paddingTop: "40px" }}>
       <div className="w-100" style={{ maxWidth: 440 }}>
-        <div className="mb-3">
-          <Link to="/login" className="text-decoration-none">
-            ← Về đăng nhập
-          </Link>
+        <div className="mb-3 d-flex justify-content-between">
+          <Button variant="link" className="text-decoration-none p-0" onClick={() => navigate(-1)}>
+            ← Quay lại
+          </Button>
+          <span className="text-muted fw-bold">Tài khoản: {username}</span>
         </div>
 
         <Card className="shadow-sm border-0 rounded-4">
           <Card.Body className="p-4 p-md-5">
             <div className="text-center mb-4">
               <div className="hj-logo mb-2">H</div>
-              <div className="fw-bold" style={{ color: "#f59f00" }}>
-                HomeCare
+              <div className="fw-bold fs-5" style={{ color: "#0d6efd" }}>
+                HomeCare Security
               </div>
-              <h2 className="mt-2 mb-1">Đổi mật khẩu</h2>
+              <h2 className="mt-2 mb-1 fs-3">Đổi mật khẩu</h2>
               <div className="hj-muted">
-                Nhập OTP đã gửi tới email và mật khẩu mới.
+                {isForgotPasswordMode 
+                   ? `Kiểm tra mã OTP 6 số được gửi về email ${email} của bạn.`
+                   : "Bạn không cần OTP nữa, chỉ cần xác nhận mật khẩu cũ của bạn."
+                }
               </div>
             </div>
 
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3">
-                <Form.Label>Mã OTP</Form.Label>
-                <Form.Control
-                  name="otp"
-                  value={form.otp}
-                  onChange={handleChange}
-                  placeholder="Nhập OTP 6 số"
-                  isInvalid={!!errors.otp}
-                  maxLength={6}
-                  className="text-center fw-bold fs-5"
-                  style={{ letterSpacing: "8px" }}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.otp}
-                </Form.Control.Feedback>
-              </Form.Group>
+              
+              {isForgotPasswordMode ? (
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">Mã xác thực OTP</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="otp"
+                    value={form.otp}
+                    onChange={handleChange}
+                    placeholder="Nhập mã 6 số"
+                    maxLength={6}
+                    isInvalid={!!errors.otp}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.otp}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              ) : (
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-semibold">Mật khẩu hiện tại</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="oldPassword"
+                    value={form.oldPassword}
+                    onChange={handleChange}
+                    placeholder="Nhập mật khẩu đang dùng"
+                    isInvalid={!!errors.oldPassword}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.oldPassword}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              )}
 
-              <Form.Group className="mb-4">
-                <Form.Label>Mật khẩu mới</Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-semibold">Mật khẩu mới</Form.Label>
                 <Form.Control
                   type="password"
                   name="password"
@@ -194,13 +251,13 @@ function ChangePasswordPage() {
               </Form.Group>
 
               <Form.Group className="mb-4">
-                <Form.Label>Xác nhận mật khẩu</Form.Label>
+                <Form.Label className="fw-semibold">Xác nhận mật khẩu mới</Form.Label>
                 <Form.Control
                   type="password"
                   name="confirmPassword"
                   value={form.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Nhập lại mật khẩu"
+                  placeholder="Nhập lại mật khẩu mới"
                   isInvalid={!!errors.confirmPassword}
                   required
                 />
@@ -219,16 +276,12 @@ function ChangePasswordPage() {
 
               <Button
                 type="submit"
-                className="w-100 rounded-3"
+                className="w-100 rounded-3 py-2 fw-bold"
                 disabled={loading}
-                style={{
-                  background:
-                    "linear-gradient(90deg, #0d6efd 0%, #0b5ed7 50%, #0aa2c0 100%)",
-                  border: "none",
-                  boxShadow: "0 12px 30px rgba(13,110,253,0.35)"
-                }}
+                variant="primary"
+                style={{ boxShadow: "0 4px 14px 0 rgba(13,110,253,0.39)" }}
               >
-                {loading ? "Đang đổi mật khẩu..." : "Đặt lại mật khẩu"}
+                {loading ? "Đang xử lý..." : "Cập nhật Mật khẩu"}
               </Button>
             </Form>
           </Card.Body>

@@ -10,13 +10,15 @@ import LoginPage from "./pages/auth/LoginPage";
 //Auth
 import RegisterPage from "./pages/auth/RegisterPage";
 import ServicesPage from "./pages/ServicesPage";
+import HelpersPage from "./pages/HelpersPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
 
 // Customer
-import CustomerDashboard from "./pages/CustomerDashboard";
-import CustomerBookings from "./pages/CustomerBookings";
-import CustomerCreateBooking from "./pages/CustomerCreateBooking";
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
+import CustomerBookings from "./pages/customer/CustomerBookings";
+import CustomerCreateBooking from "./pages/customer/CustomerCreateBooking";
+import CustomerProfile from "./pages/customer/CustomerProfile";
 
 // Helper
 import HelperDashboard from "./pages/helper/HelperDashboard";
@@ -34,6 +36,8 @@ import UserView from "./pages/admin/UserView";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminSchedule from "./pages/admin/AdminSchedule";
 import AdminFeedback from "./pages/admin/AdminFeedback";
+import AdminBookings from "./pages/admin/AdminBookings";
+import NotPublic from "./pages/NotPublic";
 
 function App() {
   return (
@@ -43,10 +47,12 @@ function App() {
         {/* Public */}
         <Route path="/" element={<HomePage />} />
         <Route path="/services" element={<ServicesPage />} />
+        <Route path="/helpers" element={<HelpersPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/error" element={<NotPublic />} />
 
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
@@ -56,6 +62,7 @@ function App() {
             <Route path="/customer" element={<CustomerDashboard />} />
             <Route path="/customer/bookings" element={<CustomerBookings />} />
             <Route path="/customer/bookings/new" element={<CustomerCreateBooking />} />
+            <Route path="/customer/profile" element={<CustomerProfile />} />
           </Route>
 
           {/* HELPER */}
@@ -72,6 +79,7 @@ function App() {
           <Route element={<RoleRoute allow={["ADMIN"]} />}>
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/services" element={<AdminServices />} />
+            <Route path="/admin/bookings" element={<AdminBookings />} />
             <Route path="/admin/feedback" element={<AdminFeedback />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/schedule" element={<AdminSchedule />} />

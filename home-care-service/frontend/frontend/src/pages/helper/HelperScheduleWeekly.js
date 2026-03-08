@@ -4,19 +4,18 @@ import axios from 'axios';
 import HelperSidebar from './components/HelperSidebar';
 
 export default function HelperScheduleWeekly() {
-  const [helper, setHelper] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [filterPeriod, setFilterPeriod] = useState("MONTH");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      setHelper(parsedUser);
       fetchData(parsedUser.id);
     }
   }, []);
@@ -35,7 +34,7 @@ export default function HelperScheduleWeekly() {
   };
 
   const getServiceName = (id) => {
-    const s = services.find(srv => String(srv.id) === String(id));
+    const s = services.find(srv => String(srv.id) === String(id) || srv.code === String(id));
     return s ? s.name : "Dịch vụ";
   };
 
@@ -48,31 +47,41 @@ export default function HelperScheduleWeekly() {
     return <Badge bg="warning text-dark">Sắp diễn ra</Badge>;
   };
 
-  // ----- TÍNH TOÁN LỊCH TUẦN NÀY ----- //
-  const weeklyBookings = useMemo(() => {
+  // ----- TÍNH TOÁN LỌC THEO THỜI GIAN ----- //
+  const timeFilteredBookings = useMemo(() => {
     const now = new Date();
-    // Tính đầu tuần (Thứ 2) và cuối tuần (Chủ nhật) tương đối
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
-    startOfWeek.setHours(0,0,0,0);
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(endOfWeek.getDate() + 6);
-    endOfWeek.setHours(23,59,59,999);
-
+    
     return bookings.filter(b => {
       const d = new Date(b.startTime);
-      return d >= startOfWeek && d <= endOfWeek;
+      if (filterPeriod === "DAY") {
+        return d.getDate() === now.getDate() && 
+               d.getMonth() === now.getMonth() && 
+               d.getFullYear() === now.getFullYear();
+      } else if (filterPeriod === "WEEK") {
+        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
+        startOfWeek.setHours(0, 0, 0, 0);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        return d >= startOfWeek && d <= endOfWeek;
+      } else if (filterPeriod === "MONTH") {
+        return d.getMonth() === now.getMonth() && 
+               d.getFullYear() === now.getFullYear();
+      }
+      return true;
     });
-  }, [bookings]);
+  }, [bookings, filterPeriod]);
 
-  // Bộ lọc Search nội bộ Lịch Tuần
+  // Bộ lọc Search nội bộ
   const filteredSchedule = useMemo(() => {
-    return weeklyBookings.filter(b => {
+    return timeFilteredBookings.filter(b => {
       const keyword = search.trim().toLowerCase();
       const bCode = (b.bookingCode || "").toLowerCase();
-      const sName = getServiceName(b.serviceId).toLowerCase();
+      const srvInfo = services.find(srv => String(srv.id) === String(b.serviceId) || srv.code === String(b.serviceId));
+      const sName = (srvInfo ? srvInfo.name : "Dịch vụ").toLowerCase();
       return bCode.includes(keyword) || sName.includes(keyword);
-    }).sort((a,b) => new Date(a.startTime) - new Date(b.startTime));
-  }, [weeklyBookings, search, services]);
+    }).sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+  }, [timeFilteredBookings, search, services]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -91,36 +100,51 @@ export default function HelperScheduleWeekly() {
         <Col xs={12} md={8} lg={9}>
           <div className="mb-4">
             <h2 className="fw-bold mb-1" style={{ color: "#1e293b" }}>
-              Lịch làm việc hàng tuần
+              Lịch làm việc hàng tháng
             </h2>
             <div style={{ color: "#64748b" }}>
-              Chi tiết công tác tuyến trong tuần hiện hành dành cho bạn. Tối ưu việc di chuyển đúng giờ.
+              Chi tiết công tác tuyến trong tháng hiện hành dành cho bạn. Tối ưu việc di chuyển đúng giờ.
             </div>
           </div>
 
           <Card className="shadow-sm border-0 rounded-4">
             <Card.Header className="bg-white border-0 rounded-top-4 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
               <div className="fw-bold fs-5" style={{ color: "#1e293b" }}>
-                Danh sách ca trực (Tuần này)
+                Danh sách ca trực
               </div>
-              <Form.Control 
-                placeholder="Tìm mã đơn, dịch vụ..." 
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="rounded-3"
-                style={{ width: "250px" }}
-              />
+              <div className="d-flex gap-2">
+                <Form.Select 
+                  value={filterPeriod} 
+                  onChange={(e) => {
+                    setFilterPeriod(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="rounded-3"
+                  style={{ width: "160px" }}
+                >
+                  <option value="DAY">Hôm nay</option>
+                  <option value="WEEK">Tuần này</option>
+                  <option value="MONTH">Tháng này</option>
+                </Form.Select>
+                <Form.Control
+                  placeholder="Tìm mã đơn, dịch vụ..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="rounded-3"
+                  style={{ width: "250px" }}
+                />
+              </div>
             </Card.Header>
             <Card.Body className="p-4">
-              <Table hover responsive className="mb-0 align-middle">
+              <Table hover striped bordered className="mb-0 align-middle">
                 <thead>
                   <tr style={{ backgroundColor: "#f8fafc" }}>
                     <th className="py-3">Mã đơn</th>
                     <th className="py-3">Dịch vụ</th>
-                    <th className="py-3">Lịch chiếu (Ngày / T.Gian)</th>
+                    <th className="py-3">Lịch (Ngày)</th>
                     <th className="py-3">Địa điểm dự kiến (*)</th>
                     <th className="py-3 text-center">Trạng thái</th>
                   </tr>
@@ -131,7 +155,7 @@ export default function HelperScheduleWeekly() {
                       <tr key={j.id}>
                         <td className="fw-semibold text-secondary">{j.bookingCode}</td>
                         <td className="fw-semibold text-dark">
-                          {getServiceName(j.serviceId)} <br/>
+                          {getServiceName(j.serviceId)} <br />
                           <span className="text-muted fw-normal" style={{ fontSize: "12px" }}>Gross: {formatCurrency(j.pricing?.total || 0)}</span>
                         </td>
                         <td>
@@ -141,7 +165,7 @@ export default function HelperScheduleWeekly() {
                           </div>
                         </td>
                         <td className="text-muted fst-italic" style={{ fontSize: "13px", maxWidth: "200px" }}>
-                           {j.addressId === "1" ? "123 Nguyễn Trãi, Phường 1, Quận 1, TP.HCM" : "N/A"}
+                          {j.addressId === "1" ? "123 Nguyễn Trãi, Phường 1, Quận 1, TP.HCM" : "N/A"}
                         </td>
                         <td className="text-center">
                           {getStatusBadge(j.status)}
@@ -151,7 +175,7 @@ export default function HelperScheduleWeekly() {
                   ) : (
                     <tr>
                       <td colSpan="5" className="text-center py-4 text-muted">
-                        Tuần này bạn chưa có lịch phân công nào.
+                        Bạn chưa có lịch phân công nào theo bộ lọc này.
                       </td>
                     </tr>
                   )}

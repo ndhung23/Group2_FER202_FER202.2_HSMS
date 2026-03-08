@@ -83,7 +83,8 @@ export default function HelperDashboard() {
     return todayBookings.filter(b => {
       const keyword = search.trim().toLowerCase();
       const bCode = (b.bookingCode || "").toLowerCase();
-      const sName = getServiceName(b.serviceId).toLowerCase();
+      const srvInfo = services.find(srv => String(srv.id) === String(b.serviceId));
+      const sName = (srvInfo ? srvInfo.name : "Dịch vụ").toLowerCase();
       return bCode.includes(keyword) || sName.includes(keyword);
     }).sort((a,b) => new Date(a.startTime) - new Date(b.startTime));
   }, [todayBookings, search, services]);

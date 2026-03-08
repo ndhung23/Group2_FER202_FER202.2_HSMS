@@ -33,6 +33,13 @@ export default function AdminSidebar() {
                         Dịch vụ
                     </Button>
                     <Button
+                        variant={isActive("/admin/bookings") ? "success" : "light"}
+                        className={`text-start rounded-3 py-2 ${isActive("/admin/bookings") ? "fw-semibold disabled" : "border"}`}
+                        onClick={() => navigate("/admin/bookings")}
+                    >
+                        Duyệt yêu cầu
+                    </Button>
+                    <Button
                         variant={isActive("/admin/schedule") ? "success" : "light"}
                         className={`text-start rounded-3 py-2 ${isActive("/admin/schedule") ? "fw-semibold disabled" : "border"}`}
                         onClick={() => navigate("/admin/schedule")}

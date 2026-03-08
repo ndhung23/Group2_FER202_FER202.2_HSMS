@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, Row, Col, Table, Badge, Form, Pagination, Button, Modal } from "react-bootstrap";
 import axios from 'axios';
-import HelperSidebar from './components/HelperSidebar';
+import CustomerSidebar from './components/CustomerSidebar';
 
-export default function HelperHistory() {
+export default function CustomerBookings() {
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
+  const [helpers, setHelpers] = useState([]);
 
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
@@ -25,16 +26,18 @@ export default function HelperHistory() {
     }
   }, []);
 
-  const fetchData = async (helperId) => {
+  const fetchData = async (customerId) => {
     try {
-      const [resBookings, resServices] = await Promise.all([
-        axios.get(`http://localhost:9999/bookings?assignedHelperId=${helperId}`),
-        axios.get(`http://localhost:9999/services`)
+      const [resBookings, resServices, resHelpers] = await Promise.all([
+        axios.get(`http://localhost:9999/bookings?customerId=${customerId}`),
+        axios.get(`http://localhost:9999/services`),
+        axios.get(`http://localhost:9999/users?role=HELPER`)
       ]);
       setBookings(resBookings.data || []);
       setServices(resServices.data || []);
+      setHelpers(resHelpers.data || []);
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu Lịch sử:", error);
+      console.error("Lỗi khi tải dữ liệu Lịch sử Đơn hàng:", error);
     }
   };
 
@@ -43,80 +46,133 @@ export default function HelperHistory() {
     return s ? s.name : "Dịch vụ";
   };
 
+  const getHelperName = (id) => {
+    if (!id) return <span className="text-muted fst-italic">Chờ phân công</span>;
+    const h = helpers.find(usr => String(usr.id) === String(id));
+    return h ? h.fullName : "N/A";
+  };
+
   const formatCurrency = (value) => Number(value).toLocaleString("vi-VN") + " đ";
 
   const getStatusBadge = (status) => {
     if (status === "COMPLETED") return <Badge bg="success">Đã hoàn thành</Badge>;
-    if (status === "CANCELLED") return <Badge bg="danger">Đã hủy bỏ</Badge>;
+    if (status === "PENDING") return <Badge bg="warning" text="dark">Chờ xác nhận</Badge>;
+    if (status === "CONFIRMED") return <Badge bg="info">Đã xác nhận</Badge>;
+    if (status === "IN_PROGRESS") return <Badge bg="primary">Đang thực hiện</Badge>;
+    if (status === "CANCELLED") return <Badge bg="danger">Đã hủy</Badge>;
     return <Badge bg="secondary">{status}</Badge>;
   };
 
-  // Lấy các Booking đã xong / hủy
-  const historyBookings = useMemo(() => {
-    return bookings.filter(b => b.status === 'COMPLETED' || b.status === 'CANCELLED');
-  }, [bookings]);
+  // Lọc
+  const filteredBookings = useMemo(() => {
+    let result = bookings;
 
-  // Lọc kết hợp
-  const filteredHistory = useMemo(() => {
-    let result = historyBookings;
-
-    // Lọc theo trạng thái
     if (filterStatus !== "ALL") {
       result = result.filter(b => b.status === filterStatus);
     }
-
-    // Lọc theo ngày (YYYY-MM-DD)
     if (filterDate) {
       result = result.filter(b => b.startTime && b.startTime.startsWith(filterDate));
     }
-
-    // Lọc theo Search (Keyword)
     if (search.trim()) {
       const keyword = search.trim().toLowerCase();
       result = result.filter(b => {
         const bCode = (b.bookingCode || "").toLowerCase();
+        // Lấy tên theo serviceId luôn không thông qua hook function để tránh dependency loop
         const srvInfo = services.find(srv => String(srv.id) === String(b.serviceId));
-        const sName = (srvInfo ? srvInfo.name : "Dịch vụ").toLowerCase();
+        const sName = srvInfo ? srvInfo.name.toLowerCase() : "dịch vụ";
+
         return bCode.includes(keyword) || sName.includes(keyword);
       });
     }
 
-    return result.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
-  }, [historyBookings, filterStatus, filterDate, search, services]);
+    return result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  }, [bookings, filterStatus, filterDate, search, services]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredHistory.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredHistory.length / itemsPerPage) || 1;
+  const currentItems = filteredBookings.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage) || 1;
 
   const handleOpenDetail = (item) => {
     setSelectedItem(item);
     setShowModal(true);
   };
 
+  const markPayment = async (statusType) => {
+    if (!selectedItem) return;
+    
+    try {
+      let updatedBooking = { ...selectedItem };
+      
+      if (statusType === 'DEPOSIT') {
+        const isConfirm = window.confirm(
+          `Xác nhận thanh toán 50% tiền cọc (${formatCurrency(selectedItem.pricing?.base / 2 || 0)}) qua Cổng thanh toán?`
+        );
+        if (!isConfirm) return;
+        
+        updatedBooking = {
+          ...updatedBooking,
+          status: 'PAID_DEPOSIT',
+          paymentStatus: {
+            ...updatedBooking.paymentStatus,
+            deposit: 'PAID'
+          },
+          updatedAt: new Date().toISOString()
+        };
+      } else if (statusType === 'FINAL') {
+        const isConfirm = window.confirm(
+          `Xác nhận thanh toán 50% phí còn lại (${formatCurrency(selectedItem.pricing?.base / 2 || 0)}) qua Cổng thanh toán?`
+        );
+        if (!isConfirm) return;
+
+        updatedBooking = {
+          ...updatedBooking,
+          paymentStatus: {
+            ...updatedBooking.paymentStatus,
+            final: 'PAID'
+          },
+          updatedAt: new Date().toISOString()
+        };
+      }
+
+      // Xây dựng request payload an toàn để Patch DB JSON
+      const payload = {
+         status: updatedBooking.status,
+         paymentStatus: updatedBooking.paymentStatus,
+         updatedAt: updatedBooking.updatedAt
+      };
+
+      await axios.patch(`http://localhost:9999/bookings/${selectedItem.id}`, payload);
+      
+      // Update local state without reload
+      setBookings(prev => prev.map(b => String(b.id) === String(selectedItem.id) ? updatedBooking : b));
+      setSelectedItem(updatedBooking); // cập nhật lại modal đang mở
+      
+      alert(`Thanh toán ${statusType === 'DEPOSIT' ? 'tiền cọc' : 'nghiệm thu'} thành công!`);
+    } catch (error) {
+      console.error("Lỗi khi thanh toán:", error);
+      alert("Hệ thống lỗi, không thể thanh toán được lúc này.");
+    }
+  };
+
   return (
     <div className="dashboard-container" style={{ minHeight: "80vh", padding: "20px" }}>
       <Row className="g-4">
-        {/* Left Sidebar Menu */}
+        {/* Sidebar */}
         <Col xs={12} md={4} lg={3}>
-          <HelperSidebar />
+          <CustomerSidebar />
         </Col>
 
-        {/* Right Content */}
+        {/* Content */}
         <Col xs={12} md={8} lg={9}>
           <div className="mb-4 d-flex justify-content-between align-items-center">
             <div>
               <h2 className="fw-bold mb-1" style={{ color: "#1e293b" }}>
-                Lịch sử làm việc
+                Giao dịch & Lịch sử đơn
               </h2>
               <div style={{ color: "#64748b" }}>
-                Ghi nhận tất cả các cuốc việc bạn đã kết thúc hoặc bị hủy bỏ.
+                Kiểm tra trạng thái xác nhận và thanh toán cọc cho dịch vụ HomeCare.
               </div>
-            </div>
-            <div>
-              <Badge bg="light" text="dark" className="border px-3 py-2 fs-6 shadow-sm">
-                Tổng chuyến thành công: <span className="text-success fw-bold">{historyBookings.filter(b => b.status === 'COMPLETED').length}</span>
-              </Badge>
             </div>
           </div>
 
@@ -153,6 +209,9 @@ export default function HelperHistory() {
                     }}
                   >
                     <option value="ALL">Tất cả trạng thái</option>
+                    <option value="PENDING">Chờ xác nhận</option>
+                    <option value="CONFIRMED">Đã xác nhận</option>
+                    <option value="IN_PROGRESS">Đang thực hiện</option>
                     <option value="COMPLETED">Hoàn thành</option>
                     <option value="CANCELLED">Đã hủy</option>
                   </Form.Select>
@@ -174,6 +233,7 @@ export default function HelperHistory() {
                     <th className="py-3 text-center">STT</th>
                     <th className="py-3">Mã đơn</th>
                     <th className="py-3">Dịch vụ</th>
+                    <th className="py-3">Người phân công</th>
                     <th className="py-3">Ngày làm việc</th>
                     <th className="py-3 text-center">Trạng thái</th>
                     <th className="py-3 text-center">Chi tiết</th>
@@ -185,8 +245,11 @@ export default function HelperHistory() {
                       <tr key={j.id}>
                         <td className="text-center">{indexOfFirstItem + idx + 1}</td>
                         <td className="fw-bold text-dark">{j.bookingCode}</td>
-                        <td className="fw-semibold text-secondary">
+                        <td className="fw-semibold text-primary">
                           {getServiceName(j.serviceId)}
+                        </td>
+                        <td className="fw-semibold text-secondary">
+                          {getHelperName(j.assignedHelperId)}
                         </td>
                         <td>
                           {new Date(j.startTime).toLocaleDateString("vi-VN", { day: '2-digit', month: '2-digit', year: 'numeric' })}
@@ -195,7 +258,7 @@ export default function HelperHistory() {
                           {getStatusBadge(j.status)}
                         </td>
                         <td className="text-center">
-                          <Button variant="outline-primary" size="sm" onClick={() => handleOpenDetail(j)} title="Xem chi tiết">
+                          <Button variant="outline-info" size="sm" onClick={() => handleOpenDetail(j)} title="Xem chi tiết">
                             👁️
                           </Button>
                         </td>
@@ -203,7 +266,7 @@ export default function HelperHistory() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="text-center py-4 text-muted">
+                      <td colSpan="7" className="text-center py-4 text-muted">
                         Không tìm thấy lịch sử nào phù hợp với bộ lọc.
                       </td>
                     </tr>
@@ -232,7 +295,7 @@ export default function HelperHistory() {
       {/* Detail Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title>Chi tiết Chuyến làm việc</Modal.Title>
+          <Modal.Title>Chi tiết Đơn hàng</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedItem && (
@@ -245,8 +308,13 @@ export default function HelperHistory() {
               </Col>
               <Col md={6}>
                 <p className="mb-1 text-muted">Dịch vụ</p>
-                <p className="fw-semibold">{getServiceName(selectedItem.serviceId)}</p>
+                <p className="fw-bold text-primary fs-5">{getServiceName(selectedItem.serviceId)}</p>
               </Col>
+              <Col md={6}>
+                <p className="mb-1 text-muted">Nhân viên phụ trách</p>
+                <p className="fw-bold">{getHelperName(selectedItem.assignedHelperId)}</p>
+              </Col>
+
               <Col md={6}>
                 <p className="mb-1 text-muted">Thời gian bắt đầu</p>
                 <p className="fw-semibold">{new Date(selectedItem.startTime).toLocaleString("vi-VN")}</p>
@@ -255,34 +323,75 @@ export default function HelperHistory() {
                 <p className="mb-1 text-muted">Thời gian kết thúc</p>
                 <p className="fw-semibold">{new Date(selectedItem.endTime).toLocaleString("vi-VN")}</p>
               </Col>
-              <Col md={6}>
-                <p className="mb-1 text-muted">Tổng thời lượng</p>
-                <p className="fw-semibold">{selectedItem.durationMinutes} phút</p>
-              </Col>
+
               <Col md={12}>
-                <p className="mb-1 text-muted">Chi phí (Gross)</p>
-                <p className="fw-bold text-primary fs-5">{formatCurrency(selectedItem.pricing?.total || 0)}</p>
+                <Card className="bg-light border-0">
+                  <Card.Body>
+                    <h6 className="fw-bold">Thanh toán</h6>
+                    <Row className="g-2">
+                      <Col md={6}>
+                        <div className="d-flex justify-content-between">
+                          <span>Phí Dịch vụ (Gross):</span>
+                          <span className="fw-bold">{formatCurrency(selectedItem.pricing?.base || 0)}</span>
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="d-flex justify-content-between">
+                          <span>Phụ thu (Surge):</span>
+                          <span>{formatCurrency(selectedItem.pricing?.surge || 0)}</span>
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="d-flex justify-content-between mt-2 pt-2 border-top">
+                          <span className="fw-bold text-dark">Tiền cọc (Deposit 50%):</span>
+                          {selectedItem.paymentStatus?.deposit === "PAID"
+                            ? <span className="text-success fw-bold">Đã Cọc</span>
+                            : <Button size="sm" variant="warning" onClick={() => markPayment('DEPOSIT')}>Đóng Cọc Ngay</Button>
+                          }
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="d-flex justify-content-between mt-2 pt-2 border-top">
+                          <span className="fw-bold text-dark">Thanh toán chót (Final 50%):</span>
+                          {selectedItem.paymentStatus?.final === "PAID"
+                            ? <span className="text-success fw-bold">Đã Trả Đủ</span>
+                            : <Button size="sm" variant="success" disabled={selectedItem.status !== 'COMPLETED'} onClick={() => markPayment('FINAL')}>Nghiệm Thu</Button>
+                          }
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
               </Col>
+
               <Col md={12}>
                 <p className="mb-1 text-muted">Ghi chú (Note)</p>
-                <div className="p-2 border rounded bg-light">{selectedItem.note || "Không có ghi chú"}</div>
+                <div className="p-2 border rounded bg-white">{selectedItem.note || "Không có ghi chú"}</div>
               </Col>
+
               <Col md={12}>
-                <p className="mb-1 text-muted">Bằng chứng hoàn thành (Photos)</p>
-                <div className="d-flex gap-2">
+                <p className="mb-1 text-muted">Bằng chứng hoàn thành từ Helper</p>
+                <div className="d-flex gap-2 border p-2 bg-white rounded">
                   {selectedItem.evidenceMedia && selectedItem.evidenceMedia.length > 0 ? (
                     selectedItem.evidenceMedia.map((photo, i) => (
-                      <Badge key={i} bg="secondary" className="p-2">Hình ảnh {i + 1} đính kèm</Badge>
+                      <Badge key={i} bg="secondary" className="p-2">Tệp đính kèm {photo}</Badge>
                     ))
                   ) : (
-                    <span className="fst-italic text-muted">Không có tệp bằng chứng.</span>
+                    <span className="fst-italic text-muted">Hình ảnh sẽ cập nhật khi Helper hoàn tất.</span>
                   )}
                 </div>
               </Col>
             </Row>
           )}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="justify-content-between">
+          <div>
+            {selectedItem && selectedItem.status === 'COMPLETED' && (
+              <Button variant="outline-warning" onClick={() => alert('Mở form Đánh Giá (Review) cho đơn này')} className="fw-bold">
+                ⭐ Gửi Đánh Giá Ngay
+              </Button>
+            )}
+          </div>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Đóng
           </Button>
