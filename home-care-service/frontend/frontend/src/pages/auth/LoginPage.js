@@ -36,7 +36,7 @@ export default function LoginPage() {
       setAuth("mock-token", user.role, user);
       if (user.role === "ADMIN") navigate("/admin");
       else if (user.role === "HELPER") navigate("/helper");
-      else navigate("/customer");
+      else navigate("/");
     } catch (error) {
       console.error(error);
       setError("Có lỗi khi đăng nhập");

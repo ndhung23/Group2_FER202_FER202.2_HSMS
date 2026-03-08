@@ -19,7 +19,12 @@ import CustomerBookings from "./pages/CustomerBookings";
 import CustomerCreateBooking from "./pages/CustomerCreateBooking";
 
 // Helper
-import HelperDashboard from "./pages/HelperDashboard";
+import HelperDashboard from "./pages/helper/HelperDashboard";
+import HelperScheduleWeekly from "./pages/helper/HelperScheduleWeekly";
+import HelperIncome from "./pages/helper/HelperIncome";
+import HelperHistory from "./pages/helper/HelperHistory";
+import HelperReviews from "./pages/helper/HelperReviews";
+import HelperProfile from "./pages/helper/HelperProfile";
 
 // Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -56,6 +61,11 @@ function App() {
           {/* HELPER */}
           <Route element={<RoleRoute allow={["HELPER"]} />}>
             <Route path="/helper" element={<HelperDashboard />} />
+            <Route path="/helper/schedule/weekly" element={<HelperScheduleWeekly />} />
+            <Route path="/helper/income" element={<HelperIncome />} />
+            <Route path="/helper/history" element={<HelperHistory />} />
+            <Route path="/helper/reviews" element={<HelperReviews />} />
+            <Route path="/helper/profile" element={<HelperProfile />} />
           </Route>
 
           {/* ADMIN */}
