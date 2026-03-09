@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, Row, Col, Button, Table, Badge, Form, Pagination } from "react-bootstrap";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import HelperSidebar from './components/HelperSidebar';
 
 export default function HelperDashboard() {
+  const navigate = useNavigate();
   const [helper, setHelper] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
@@ -67,6 +69,12 @@ export default function HelperDashboard() {
   // 2. Đơn tuần này (7 ngày qua)
   const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const countThisWeek = bookings.filter(b => new Date(b.startTime) >= oneWeekAgo && new Date(b.startTime) <= now).length;
+  
+  // 2.1 Đơn tháng này
+  const countThisMonth = bookings.filter(b => {
+    const d = new Date(b.startTime);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
 
   // 3. Thu nhập tuần này (tính theo Payouts PAID trong tuần)
   const weeklyPayouts = payouts.filter(p => p.status === 'PAID' && new Date(p.paidAt) >= oneWeekAgo && new Date(p.paidAt) <= now);
@@ -120,6 +128,21 @@ export default function HelperDashboard() {
                 <Card.Body>
                   <div className="text-muted mb-1" style={{ fontSize: "14px" }}>Đơn hôm nay ({now.toLocaleDateString('vi-VN')})</div>
                   <div className="fs-3 fw-bold mt-1 text-primary">{countToday}</div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={6} lg={3}>
+              <Card className="shadow-sm border-0 rounded-4 h-100">
+                <Card.Body>
+                  <div className="text-muted mb-1" style={{ fontSize: "14px" }}>Đơn tháng này</div>
+                  <div className="fs-3 fw-bold mt-1">{countThisMonth}</div>
+                  <div
+                    className="mt-2 text-primary fw-semibold"
+                    style={{ fontSize: "13px", cursor: "pointer" }}
+                    onClick={() => navigate("/helper/history")}
+                  >
+                    Xem lịch sử →
+                  </div>
                 </Card.Body>
               </Card>
             </Col>

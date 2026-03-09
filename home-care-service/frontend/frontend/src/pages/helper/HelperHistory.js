@@ -58,7 +58,7 @@ export default function HelperHistory() {
 
   // Lọc kết hợp
   const filteredHistory = useMemo(() => {
-    let result = historyBookings;
+    let result = [...historyBookings];
 
     // Lọc theo trạng thái
     if (filterStatus !== "ALL") {
@@ -81,7 +81,11 @@ export default function HelperHistory() {
       });
     }
 
-    return result.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+    return result.sort((a, b) => {
+      const aTime = new Date(a.createdAt || a.updatedAt || a.startTime || 0).getTime();
+      const bTime = new Date(b.createdAt || b.updatedAt || b.startTime || 0).getTime();
+      return bTime - aTime;
+    });
   }, [historyBookings, filterStatus, filterDate, search, services]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -182,7 +186,7 @@ export default function HelperHistory() {
                 <tbody>
                   {currentItems.length > 0 ? (
                     currentItems.map((j, idx) => (
-                      <tr key={j.id}>
+                      <tr key={j.id} style={{ cursor: "pointer" }} onClick={() => handleOpenDetail(j)}>
                         <td className="text-center">{indexOfFirstItem + idx + 1}</td>
                         <td className="fw-bold text-dark">{j.bookingCode}</td>
                         <td className="fw-semibold text-secondary">
@@ -195,7 +199,15 @@ export default function HelperHistory() {
                           {getStatusBadge(j.status)}
                         </td>
                         <td className="text-center">
-                          <Button variant="outline-primary" size="sm" onClick={() => handleOpenDetail(j)} title="Xem chi tiết">
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenDetail(j);
+                            }}
+                            title="Xem chi tiết"
+                          >
                             👁️
                           </Button>
                         </td>

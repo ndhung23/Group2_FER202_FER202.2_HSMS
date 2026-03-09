@@ -1,139 +1,154 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button, Col, Container, Form, Row, Card } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function UserView() {
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-    const [user, setUser] = useState({
-        username: "",
-        fullName: "",
-        email: "",
-        phone: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        avatarUrl: "",
-        age: "",
-        gender: "OTHER",
-        passwordHash: "",
-    });
+  const [user, setUser] = useState(null);
+  const [helperProfile, setHelperProfile] = useState(null);
 
-    useEffect(() => {
-        const getUserById = async () => {
-            try {
-                const result = await axios.get(`http://localhost:9999/users/${id}`);
-                setUser(result.data);
-            } catch (error) {
-                console.error("Lỗi khi lấy user:", error);
-                alert("Không tìm thấy người dùng");
-                navigate("/admin");
-            }
-        };
+  useEffect(() => {
+    const getUserById = async () => {
+      try {
+        const userRes = await axios.get(`http://localhost:9999/users/${id}`);
+        const userData = userRes.data || {};
+        setUser(userData);
 
-        if (id) getUserById();
-    }, [id, navigate]);
+        if (userData.role === "HELPER") {
+          const helperRes = await axios.get(`http://localhost:9999/helperProfiles?userId=${id}`);
+          const profile = Array.isArray(helperRes.data) ? helperRes.data[0] : null;
+          setHelperProfile(profile || null);
+        } else {
+          setHelperProfile(null);
+        }
+      } catch (error) {
+        console.error("Loi khi lay user:", error);
+        alert("Khong tim thay nguoi dung");
+        navigate("/admin");
+      }
+    };
 
-    return (
-        <Container fluid style={{ backgroundColor: "#f6f8fb", minHeight: "100vh", padding: "30px" }}>
-            <Row className="justify-content-center">
-                <Col md={10} lg={8}>
-                    <Card className="shadow-sm border-0 rounded-4">
-                        <Card.Body className="p-4">
-                            <h2 className="text-center mb-4">Chi tiết người dùng</h2>
+    if (id) getUserById();
+  }, [id, navigate]);
 
-                            <Row className="g-3 mt-1">
-                                <Col md={12}>
-                                    <Form.Group>
-                                        <Form.Label>Họ và tên</Form.Label>
-                                        <Form.Control value={user.fullName} readOnly disabled />
-                                    </Form.Group>
-                                </Col>
+  const userFields = useMemo(() => {
+    if (!user) return [];
+    return Object.entries(user);
+  }, [user]);
 
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Tài khoản</Form.Label>
-                                        <Form.Control value={user.username} readOnly disabled />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Mật Khẩu tài khoản</Form.Label>
-                                        <Form.Control value={user.passwordHash} readOnly disabled />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Email</Form.Label>
-                                        <Form.Control value={user.email} readOnly disabled />
-                                    </Form.Group>
-                                </Col>
+  const helperFields = useMemo(() => {
+    if (!helperProfile) return [];
+    return Object.entries(helperProfile);
+  }, [helperProfile]);
 
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Số điện thoại</Form.Label>
-                                        <Form.Control value={user.phone} readOnly disabled />
-                                    </Form.Group>
-                                </Col>
+  const formatValue = (value) => {
+    if (typeof value === "string") return value === "" ? "\"\"" : value;
+    if (value === null) return "null";
+    if (value === undefined) return "undefined";
+    if (typeof value === "object") {
+      try {
+        return JSON.stringify(value);
+      } catch {
+        return String(value);
+      }
+    }
+    return String(value);
+  };
 
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Tuổi</Form.Label>
-                                        <Form.Control value={user.age} readOnly disabled />
-                                    </Form.Group>
-                                </Col>
+  const isImageUrl = (value) => {
+    if (typeof value !== "string") return false;
+    const normalized = value.toLowerCase();
+    const isHttp = normalized.startsWith("http://") || normalized.startsWith("https://");
+    const isPublicPath = normalized.startsWith("/");
+    const hasImageExt = /\.(png|jpe?g|gif|webp|svg)$/i.test(normalized);
+    return isHttp || isPublicPath || hasImageExt;
+  };
 
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Giới tính</Form.Label>
-                                        <Form.Select value={user.gender} disabled>
-                                            <option value="MALE">Nam</option>
-                                            <option value="FEMALE">Nữ</option>
-                                            <option value="OTHER">Khác</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
+  const renderValueField = (key, value) => {
+    if (Array.isArray(value) && value.every((item) => typeof item === "string" && isImageUrl(item))) {
+      return (
+        <>
+          <Form.Control value={formatValue(value)} readOnly disabled className="mb-2" />
+          <div className="d-flex flex-wrap gap-2">
+            {value.map((url, index) => (
+              <img
+                key={`${key}-${index}`}
+                src={url}
+                alt={`${key}-${index}`}
+                style={{ width: "120px", height: "80px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+              />
+            ))}
+          </div>
+        </>
+      );
+    }
 
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Vai trò</Form.Label>
-                                        <Form.Select value={user.role} disabled>
-                                            <option value="ADMIN">Quản trị viên</option>
-                                            <option value="CUSTOMER">Khách hàng</option>
-                                            <option value="HELPER">Người giúp việc</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
+    if (isImageUrl(value)) {
+      return (
+        <>
+          <Form.Control value={formatValue(value)} readOnly disabled className="mb-2" />
+          <img
+            src={value}
+            alt={key}
+            style={{ width: "100%", maxHeight: "180px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+          />
+        </>
+      );
+    }
 
-                                <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Trạng thái</Form.Label>
-                                        <Form.Select value={user.status} disabled>
-                                            <option value="ACTIVE">Hoạt động</option>
-                                            <option value="INACTIVE">Ngừng</option>
-                                            <option value="PENDING">Chờ duyệt</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
+    return <Form.Control value={formatValue(value)} readOnly disabled />;
+  };
 
-                                <Col md={12}>
-                                    <Form.Group>
-                                        <Form.Label>Avatar URL</Form.Label>
-                                        <Form.Control value={user.avatarUrl} readOnly disabled />
-                                    </Form.Group>
-                                </Col>
+  return (
+    <Container fluid style={{ backgroundColor: "#f6f8fb", minHeight: "100vh", padding: "30px" }}>
+      <Row className="justify-content-center">
+        <Col md={11} lg={10}>
+          <Card className="shadow-sm border-0 rounded-4">
+            <Card.Body className="p-4">
+              <h2 className="text-center mb-4">Chi tiet nguoi dung</h2>
 
-                                <Col xs={12} className="mt-4 d-flex justify-content-center">
-                                    <Button variant="secondary" onClick={() => navigate("/admin")}>
-                                        Quay lại
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
+              <h5 className="mb-3">Thong tin tai khoan</h5>
+              <Row className="g-3 mt-1">
+                {userFields.map(([key, value]) => (
+                  <Col md={6} key={key}>
+                    <Form.Group>
+                      <Form.Label>{key}</Form.Label>
+                      {renderValueField(key, value)}
+                    </Form.Group>
+                  </Col>
+                ))}
+              </Row>
+
+              {helperFields.length > 0 && (
+                <>
+                  <h5 className="mt-4 mb-3">Thong tin helper profile</h5>
+                  <Row className="g-3">
+                    {helperFields.map(([key, value]) => (
+                      <Col md={6} key={`helper-${key}`}>
+                        <Form.Group>
+                          <Form.Label>{key}</Form.Label>
+                          {renderValueField(key, value)}
+                        </Form.Group>
+                      </Col>
+                    ))}
+                  </Row>
+                </>
+              )}
+
+              <Row className="mt-1">
+                <Col xs={12} className="mt-4 d-flex justify-content-center">
+                  <Button variant="secondary" onClick={() => navigate("/admin")}>
+                    Quay lai
+                  </Button>
                 </Col>
-            </Row>
-        </Container>
-    );
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
 }

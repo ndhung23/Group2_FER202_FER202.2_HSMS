@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import CustomerSidebar from './components/CustomerSidebar';
 
@@ -14,6 +14,7 @@ export default function CustomerCreateBooking() {
     date: "",
     time: "",
     duration: 120, // default 2 hours
+    basePrice: 0,
     address: "",
     note: ""
   });
@@ -23,6 +24,7 @@ export default function CustomerCreateBooking() {
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -35,10 +37,28 @@ export default function CustomerCreateBooking() {
 
     // Lấy DS dịch vụ để load lên Select Box
     axios.get(`http://localhost:9999/services`)
-      .then(res => setServices(res.data || []))
+      .then(res => {
+        const list = res.data || [];
+        setServices(list);
+
+        const stateServiceId = location.state?.selectedServiceId;
+        const queryServiceId = new URLSearchParams(location.search).get("serviceId");
+        const preselectedServiceId = stateServiceId || queryServiceId;
+        if (!preselectedServiceId) return;
+
+        const selected = list.find(s => String(s.id) === String(preselectedServiceId));
+        if (!selected) return;
+
+        setFormData(prev => ({
+          ...prev,
+          serviceId: String(selected.id),
+          duration: Number(selected.minDurationMinutes || 120),
+          basePrice: Number(selected.basePrice || 0)
+        }));
+      })
       .catch(err => console.error(err));
 
-  }, []);
+  }, [location.search, location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +68,9 @@ export default function CustomerCreateBooking() {
         const srv = services.find(s => String(s.id) === String(value));
         if (srv) {
           updated.duration = srv.minDurationMinutes;
+          updated.basePrice = srv.basePrice;
+        } else {
+          updated.basePrice = 0;
         }
       }
       return updated;
@@ -77,7 +100,9 @@ export default function CustomerCreateBooking() {
       const srv = services.find(s => String(s.id) === String(formData.serviceId));
       let costBase = 0;
       if (srv) {
-        costBase = srv.basePrice;
+        costBase = Number(srv.basePrice || 0);
+      } else {
+        costBase = Number(formData.basePrice || 0);
       }
 
       // Convert Date + Time into ISO 8601 string
@@ -189,6 +214,17 @@ export default function CustomerCreateBooking() {
                       <Form.Label className="fw-semibold">4. Thời lượng ước tính (Phút) <span className="text-danger">*</span></Form.Label>
                       <Form.Control readOnly value={`${formData.duration} phút`} className="bg-light" />
                       <Form.Text className="text-muted">Thời lượng được tự động tính dựa trên gói dịch vụ bạn đã chọn.</Form.Text>
+                    </Form.Group>
+                  </Col>
+                  <Col md={12}>
+                    <Form.Group>
+                      <Form.Label className="fw-semibold">4.1 Giá dịch vụ (VNĐ)</Form.Label>
+                      <Form.Control
+                        readOnly
+                        value={Number(formData.basePrice || 0).toLocaleString("vi-VN") + " đ"}
+                        className="bg-light text-primary fw-bold"
+                      />
+                      <Form.Text className="text-muted">Giá được tự động lấy theo gói dịch vụ đã chọn.</Form.Text>
                     </Form.Group>
                   </Col>
                   <Col md={12}>

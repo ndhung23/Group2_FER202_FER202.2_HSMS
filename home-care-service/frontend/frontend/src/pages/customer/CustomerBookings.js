@@ -65,7 +65,7 @@ export default function CustomerBookings() {
 
   // Lọc
   const filteredBookings = useMemo(() => {
-    let result = bookings;
+    let result = [...bookings];
 
     if (filterStatus !== "ALL") {
       result = result.filter(b => b.status === filterStatus);
@@ -85,7 +85,11 @@ export default function CustomerBookings() {
       });
     }
 
-    return result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    return result.sort((a, b) => {
+      const aTime = new Date(a.createdAt || a.updatedAt || a.startTime || 0).getTime();
+      const bTime = new Date(b.createdAt || b.updatedAt || b.startTime || 0).getTime();
+      return bTime - aTime;
+    });
   }, [bookings, filterStatus, filterDate, search, services]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
