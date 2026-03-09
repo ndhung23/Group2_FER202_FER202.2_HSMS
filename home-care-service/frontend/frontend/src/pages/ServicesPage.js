@@ -72,6 +72,11 @@ export default function ServicesPage() {
             result.sort((a,b) => Number(b.minDurationMinutes) - Number(a.minDurationMinutes)); 
             break;
         default: 
+            result.sort((a, b) => {
+              const aTime = new Date(a.createdAt || a.updatedAt || 0).getTime();
+              const bTime = new Date(b.createdAt || b.updatedAt || 0).getTime();
+              return bTime - aTime;
+            });
             break;
     }
 
@@ -263,7 +268,13 @@ export default function ServicesPage() {
                           </div>
                         </div>
 
-                        <Button as={Link} to="/customer/bookings/new" variant="outline-primary" className="w-100 fw-bold border-2 rounded-pill">
+                        <Button
+                          as={Link}
+                          to={`/customer/bookings/new?serviceId=${s.id}`}
+                          state={{ selectedServiceId: s.id }}
+                          variant="outline-primary"
+                          className="w-100 fw-bold border-2 rounded-pill"
+                        >
                           Chọn Dịch Vụ
                         </Button>
                       </Card.Body>

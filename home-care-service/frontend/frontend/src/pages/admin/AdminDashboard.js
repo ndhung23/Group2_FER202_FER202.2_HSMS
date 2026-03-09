@@ -61,6 +61,10 @@ function AdminDashboard() {
       const matchStatus = selectedStatus ? u.status === selectedStatus : true;
 
       return matchSearch && matchRole && matchStatus;
+    }).sort((a, b) => {
+      const aTime = new Date(a.createdAt || a.updatedAt || 0).getTime();
+      const bTime = new Date(b.createdAt || b.updatedAt || 0).getTime();
+      return bTime - aTime;
     });
   }, [users, search, selectedRole, selectedStatus]);
 
@@ -411,36 +415,44 @@ function AdminDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline-primary"
-                                className="rounded-3 px-3"
+                                className="rounded-3 px-2"
                                 onClick={() => navigate(`/admin/user/view/${u.id}`)}
+                                title="Xem"
+                                aria-label="Xem"
                               >
-                                Xem
+                                👁
                               </Button>
                               <Button
                                 size="sm"
                                 variant="outline-warning"
-                                className="rounded-3 px-3"
+                                className="rounded-3 px-2"
                                 onClick={() => navigate(`/admin/user/edit/${u.id}`)}
+                                title="Sửa"
+                                aria-label="Sửa"
                               >
-                                Sửa
+                                ✏️
                               </Button>
                               {u.status === "ACTIVE" && (
                                 <Button
                                   size="sm"
                                   variant="outline-secondary"
-                                  className="rounded-3 px-3"
+                                  className="rounded-3 px-2"
                                   onClick={() => handleSuspendUser(u)}
+                                  title="Cấm"
+                                  aria-label="Cấm"
                                 >
-                                  Cấm
+                                  ⛔
                                 </Button>
                               )}
                               <Button
                                 size="sm"
                                 variant="outline-danger"
-                                className="rounded-3 px-3"
+                                className="rounded-3 px-2"
                                 onClick={() => handleDeleteUser(u.id)}
+                                title="Xóa"
+                                aria-label="Xóa"
                               >
-                                Xóa
+                                🗑
                               </Button>
                             </div>
                           </td>

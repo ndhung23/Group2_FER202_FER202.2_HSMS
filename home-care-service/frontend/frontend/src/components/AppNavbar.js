@@ -48,6 +48,14 @@ export default function AppNavbar() {
               className="hj-nav-link" as={NavLink} to="/helpers" >
               Người giúp việc
             </Nav.Link>
+            <Nav.Link
+              className="hj-nav-link ms-auto rounded-pill text-end"
+              as={NavLink}
+              to="/register"
+              style={{ backgroundColor: "#f59e0b", color: "#fff" }}
+            >
+              Đăng ký nhân viên
+            </Nav.Link>
           </Nav>
 
           <div className="d-flex align-items-center gap-2">

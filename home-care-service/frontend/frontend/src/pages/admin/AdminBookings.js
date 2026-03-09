@@ -117,7 +117,11 @@ export default function AdminBookings() {
           });
       }
       // Sort by newest first
-      result.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      result.sort((a,b) => {
+         const aTime = new Date(a.createdAt || a.updatedAt || a.startTime || 0).getTime();
+         const bTime = new Date(b.createdAt || b.updatedAt || b.startTime || 0).getTime();
+         return bTime - aTime;
+      });
       return result;
    }, [bookings, activeTab, search, statusFilter, dateFilter, users, services]);
 
