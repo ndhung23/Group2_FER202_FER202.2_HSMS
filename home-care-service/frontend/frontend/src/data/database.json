@@ -294,6 +294,36 @@
       "gender": "MALE",
       "createdAt": "2026-03-09T05:51:41.790Z",
       "updatedAt": "2026-03-09T05:51:41.790Z"
+    },
+    {
+      "id": "b67d",
+      "role": "CUSTOMER",
+      "username": "testhelper1",
+      "fullName": "testhelper1 testhelper1",
+      "phone": "0359928442",
+      "email": "testhelper1@gmail.com",
+      "passwordHash": "testhelper1A@",
+      "avatarUrl": "",
+      "status": "ACTIVE",
+      "age": 23,
+      "gender": "MALE",
+      "createdAt": "2026-03-14T13:39:01.769Z",
+      "updatedAt": "2026-03-14T13:39:01.770Z"
+    },
+    {
+      "id": "d15e",
+      "role": "HELPER",
+      "username": "testhelper2",
+      "fullName": "testhelper2 testhelper2",
+      "phone": "0359928441",
+      "email": "testhelper2@gmail.com",
+      "passwordHash": "azure@a123A",
+      "avatarUrl": "",
+      "status": "ACTIVE",
+      "age": 23,
+      "gender": "MALE",
+      "createdAt": "2026-03-14T14:05:36.368Z",
+      "updatedAt": "2026-03-14T14:05:36.368Z"
     }
   ],
   "customerProfiles": [
