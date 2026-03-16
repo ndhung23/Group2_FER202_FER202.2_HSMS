@@ -21,7 +21,7 @@ export default function HelperReviews() {
   const fetchData = async (helperId) => {
     try {
       const [resReviews, resUsers] = await Promise.all([
-        axios.get(`http://localhost:9999/reviews?helperId=${helperId}`),
+        axios.get(`http://localhost:9999/helper/reviews?helperId=${helperId}`),
         axios.get(`http://localhost:9999/users`)
       ]);
       setReviews(resReviews.data || []);

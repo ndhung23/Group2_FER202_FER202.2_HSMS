@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Form, Button, Badge } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import axios from "axios";
 import imageHomeCare from "../assets/imageHomeCare.jpg";
 
@@ -195,9 +195,7 @@ export default function HomePage() {
                       <Badge bg="light" text="dark" className="border">Nhiệt tình</Badge>
                     </div>
 
-                    <Button className="w-100 rounded-3 mt-4" variant="outline-primary">
-                      Xem chi tiết
-                    </Button>
+                    <NavLink className="btn btn-primary w-100 rounded-3 mt-4" to={`/helper/reviews?helperId=${h.id}`}> Xem chi tiết</NavLink>
                   </Card.Body>
                 </Card>
               </Col>
