@@ -127,9 +127,10 @@ export default function LoginPage() {
               <div className="text-center my-3 hj-muted">Hoặc đăng nhập nhanh</div>
 
               <Button
+                as={Link} to="/error" 
                 variant="light"
                 className="w-100 border rounded-3 mb-3"
-                onClick={(e) => e.preventDefault()}
+                //onClick={(e) => e.preventDefault()}
               >
                 Tiếp tục với Google
               </Button>

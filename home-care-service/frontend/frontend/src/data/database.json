@@ -23,12 +23,12 @@
       "phone": "0911111112",
       "email": "ndhung.work@gmail.com",
       "passwordHash": "123",
-      "avatarUrl": "",
+      "avatarUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcN6JkYT-rrhN1DrgERGAIByEMnm2NdYkN0xTf9A_CnhSWYjYDdqGeApnSGt_4mEQeHqsOrkkHKSnoY1m7wEGZk4FKp5Sp1nH970_H8092&s=10",
       "status": "ACTIVE",
       "createdAt": "2026-01-05T08:00:00Z",
       "updatedAt": "2026-03-08T15:45:06.257Z",
-      "age": 25,
-      "gender": "OTHER"
+      "age": "25",
+      "gender": "MALE"
     },
     {
       "id": "3",
@@ -294,6 +294,36 @@
       "gender": "MALE",
       "createdAt": "2026-03-09T05:51:41.790Z",
       "updatedAt": "2026-03-09T05:51:41.790Z"
+    },
+    {
+      "id": "b67d",
+      "role": "CUSTOMER",
+      "username": "testhelper1",
+      "fullName": "testhelper1 testhelper1",
+      "phone": "0359928442",
+      "email": "testhelper1@gmail.com",
+      "passwordHash": "testhelper1A@",
+      "avatarUrl": "",
+      "status": "ACTIVE",
+      "age": 23,
+      "gender": "MALE",
+      "createdAt": "2026-03-14T13:39:01.769Z",
+      "updatedAt": "2026-03-14T13:39:01.770Z"
+    },
+    {
+      "id": "d15e",
+      "role": "HELPER",
+      "username": "testhelper2",
+      "fullName": "testhelper2 testhelper2",
+      "phone": "0359928441",
+      "email": "testhelper2@gmail.com",
+      "passwordHash": "azure@a123A",
+      "avatarUrl": "",
+      "status": "ACTIVE",
+      "age": 23,
+      "gender": "MALE",
+      "createdAt": "2026-03-14T14:05:36.368Z",
+      "updatedAt": "2026-03-14T14:05:36.368Z"
     }
   ],
   "customerProfiles": [
@@ -1096,6 +1126,118 @@
       "evidenceMedia": [],
       "createdAt": "2026-03-09T07:44:21.278Z",
       "updatedAt": "2026-03-09T07:45:02.998Z"
+    },
+    {
+      "id": "1773652973110",
+      "bookingCode": "BK-R86120",
+      "customerId": "5",
+      "serviceId": "6",
+      "addressId": "1",
+      "fullAddress": "123 Pho Hue, Ha Noi",
+      "startTime": "2026-03-16T19:23:00Z",
+      "endTime": "2026-03-16T21:23:00.000Z",
+      "durationMinutes": 120,
+      "note": "",
+      "status": "PAID_DEPOSIT",
+      "assignedHelperId": "34",
+      "pricing": {
+        "base": 180000,
+        "surge": 0,
+        "discount": 0,
+        "total": 180000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PAID",
+        "final": "PENDING"
+      },
+      "evidenceMedia": [],
+      "createdAt": "2026-03-16T09:22:53.110Z",
+      "updatedAt": "2026-03-16T09:23:45.224Z"
+    },
+    {
+      "id": "1773653153558",
+      "bookingCode": "BK-R99033",
+      "customerId": "5",
+      "serviceId": "15",
+      "addressId": "1",
+      "fullAddress": "123 Pho Hue, Ha Noi",
+      "startTime": "2026-03-16T18:26:00Z",
+      "endTime": "2026-03-16T19:26:00.000Z",
+      "durationMinutes": 60,
+      "note": "a",
+      "status": "PENDING",
+      "assignedHelperId": null,
+      "pricing": {
+        "base": 150000,
+        "surge": 0,
+        "discount": 0,
+        "total": 150000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PENDING",
+        "final": "PENDING"
+      },
+      "evidenceMedia": [],
+      "createdAt": "2026-03-16T09:25:53.558Z",
+      "updatedAt": "2026-03-16T09:25:53.558Z"
+    },
+    {
+      "id": "1773653250336",
+      "bookingCode": "BK-R8674",
+      "customerId": "5",
+      "serviceId": "25",
+      "addressId": "1",
+      "fullAddress": "a",
+      "startTime": "2026-03-16T18:27:00Z",
+      "endTime": "2026-03-16T19:27:00.000Z",
+      "durationMinutes": 60,
+      "note": "a",
+      "status": "PENDING",
+      "assignedHelperId": null,
+      "pricing": {
+        "base": 120000,
+        "surge": 0,
+        "discount": 0,
+        "total": 120000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PENDING",
+        "final": "PENDING"
+      },
+      "evidenceMedia": [],
+      "createdAt": "2026-03-16T09:27:30.336Z",
+      "updatedAt": "2026-03-16T09:27:30.336Z"
+    },
+    {
+      "id": "1773653724096",
+      "bookingCode": "BK-R74038",
+      "customerId": "5",
+      "serviceId": "19",
+      "addressId": "1",
+      "fullAddress": "a",
+      "startTime": "2026-03-16T19:35:00",
+      "endTime": "2026-03-16T20:35:00",
+      "durationMinutes": 60,
+      "note": "a",
+      "status": "COMPLETED",
+      "assignedHelperId": "34",
+      "pricing": {
+        "base": 100000,
+        "surge": 0,
+        "discount": 0,
+        "total": 100000,
+        "currency": "VND"
+      },
+      "paymentStatus": {
+        "deposit": "PAID",
+        "final": "PAID"
+      },
+      "evidenceMedia": [],
+      "createdAt": "2026-03-16T09:35:24.096Z",
+      "updatedAt": "2026-03-16T09:43:32.352Z"
     }
   ],
   "bookingAssignments": [],

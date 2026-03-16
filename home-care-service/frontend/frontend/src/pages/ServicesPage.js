@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Form, Pagination } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -13,6 +13,8 @@ export default function ServicesPage() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [sortBy, setSortBy] = useState('DEFAULT');
+  const [currentPage, setCurrentPage] = useState(1);
+  const servicesPerPage = 6;
 
   useEffect(() => {
     axios.get('http://localhost:9999/services')
@@ -82,6 +84,16 @@ export default function ServicesPage() {
 
     return result;
   }, [services, searchTerm, priceFilter, minPrice, maxPrice, sortBy]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, priceFilter, minPrice, maxPrice, sortBy]);
+
+  const totalPages = Math.ceil(filteredServices.length / servicesPerPage);
+  const paginatedServices = useMemo(() => {
+    const startIndex = (currentPage - 1) * servicesPerPage;
+    return filteredServices.slice(startIndex, startIndex + servicesPerPage);
+  }, [filteredServices, currentPage]);
 
   return (
     <div className="min-vh-100 py-4" style={{ backgroundColor: "#f4f6f8" }}>
@@ -233,8 +245,9 @@ export default function ServicesPage() {
                 <Spinner animation="border" variant="primary" />
               </div>
             ) : filteredServices.length > 0 ? (
+              <>
               <Row className="g-4">
-                {filteredServices.map(s => (
+                {paginatedServices.map(s => (
                   <Col lg={4} sm={6} key={s.id}>
                     <Card className="h-100 shadow-sm border-0 rounded-4 overflow-hidden service-card-hover">
                       {s.imageUrl ? (
@@ -282,6 +295,26 @@ export default function ServicesPage() {
                   </Col>
                 ))}
               </Row>
+              {totalPages > 1 && (
+                <div className="d-flex justify-content-center mt-4">
+                  <Pagination className="mb-0 flex-wrap">
+                    <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+                    <Pagination.Prev onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} />
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map(page => (
+                      <Pagination.Item
+                        key={page}
+                        active={page === currentPage}
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </Pagination.Item>
+                    ))}
+                    <Pagination.Next onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} />
+                    <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+                  </Pagination>
+                </div>
+              )}
+              </>
             ) : (
                 <div className="text-center py-5 bg-white rounded-4 shadow-sm">
                    <div className="mb-3" style={{ fontSize: "50px" }}>🕵️‍♂️</div>

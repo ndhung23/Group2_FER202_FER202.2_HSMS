@@ -9,6 +9,7 @@ import LoginPage from "./pages/auth/LoginPage";
 
 //Auth
 import RegisterPage from "./pages/auth/RegisterPage";
+import RegisterPageHelper from "./pages/auth/RegisterPageHelper";
 import ServicesPage from "./pages/ServicesPage";
 import HelpersPage from "./pages/HelpersPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
@@ -50,6 +51,7 @@ function App() {
         <Route path="/helpers" element={<HelpersPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/registerHelper" element={<RegisterPageHelper />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/error" element={<NotPublic />} />

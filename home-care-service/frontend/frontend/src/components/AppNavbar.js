@@ -51,7 +51,7 @@ export default function AppNavbar() {
             <Nav.Link
               className="hj-nav-link ms-auto rounded-pill text-end"
               as={NavLink}
-              to="/register"
+              to="/registerHelper"
               style={{ backgroundColor: "#f59e0b", color: "#fff" }}
             >
               Đăng ký nhân viên
