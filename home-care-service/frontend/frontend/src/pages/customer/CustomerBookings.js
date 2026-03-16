@@ -63,6 +63,13 @@ export default function CustomerBookings() {
     return <Badge bg="secondary">{status}</Badge>;
   };
 
+  const toLocalDateKey = (value) => {
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return "";
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`;
+  };
+
   // Lọc
   const filteredBookings = useMemo(() => {
     let result = [...bookings];
@@ -71,7 +78,7 @@ export default function CustomerBookings() {
       result = result.filter(b => b.status === filterStatus);
     }
     if (filterDate) {
-      result = result.filter(b => b.startTime && b.startTime.startsWith(filterDate));
+      result = result.filter(b => toLocalDateKey(b.startTime) === filterDate);
     }
     if (search.trim()) {
       const keyword = search.trim().toLowerCase();

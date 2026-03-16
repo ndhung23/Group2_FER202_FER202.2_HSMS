@@ -60,6 +60,16 @@ export default function CustomerCreateBooking() {
 
   }, [location.search, location.state]);
 
+  const toLocalDateInputValue = (dateObj = new Date()) => {
+    const timezoneOffsetMs = dateObj.getTimezoneOffset() * 60000;
+    return new Date(dateObj.getTime() - timezoneOffsetMs).toISOString().slice(0, 10);
+  };
+
+  const toLocalDateTimeString = (dateObj) => {
+    const pad = (value) => String(value).padStart(2, '0');
+    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}T${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}`;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => {
@@ -105,8 +115,12 @@ export default function CustomerCreateBooking() {
         costBase = Number(formData.basePrice || 0);
       }
 
-      // Convert Date + Time into ISO 8601 string
-      const startDateTimeStr = `${formData.date}T${formData.time}:00Z`;
+      const startDateTime = new Date(`${formData.date}T${formData.time}:00`);
+      if (Number.isNaN(startDateTime.getTime())) {
+        setError("Ngày hoặc giờ không hợp lệ. Vui lòng kiểm tra lại.");
+        return;
+      }
+      const endDateTime = new Date(startDateTime.getTime() + Number(formData.duration) * 60000);
 
       const payload = {
         id: Date.now().toString(), // Mock ID gen
@@ -115,9 +129,9 @@ export default function CustomerCreateBooking() {
         serviceId: String(formData.serviceId),
         addressId: "1", // Hardcode fallback cho v1
         fullAddress: formData.address,
-        startTime: startDateTimeStr,
-        endTime: new Date(new Date(startDateTimeStr).getTime() + formData.duration * 60000).toISOString(),
-        durationMinutes: parseInt(formData.duration),
+        startTime: toLocalDateTimeString(startDateTime),
+        endTime: toLocalDateTimeString(endDateTime),
+        durationMinutes: parseInt(formData.duration, 10),
         note: formData.note,
         status: "PENDING",
         assignedHelperId: null, // Chưa có ai nhận
@@ -194,7 +208,7 @@ export default function CustomerCreateBooking() {
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label className="fw-semibold">2. Ngày thi công <span className="text-danger">*</span></Form.Label>
-                      <Form.Control type="date" name="date" value={formData.date} onChange={handleChange} min={new Date().toISOString().split('T')[0]} />
+                      <Form.Control type="date" name="date" value={formData.date} onChange={handleChange} min={toLocalDateInputValue()} />
                     </Form.Group>
                   </Col>
                   <Col md={3}>

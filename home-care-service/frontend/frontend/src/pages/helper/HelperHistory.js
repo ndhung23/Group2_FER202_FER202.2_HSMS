@@ -51,6 +51,13 @@ export default function HelperHistory() {
     return <Badge bg="secondary">{status}</Badge>;
   };
 
+  const toLocalDateKey = (value) => {
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return "";
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`;
+  };
+
   // Lấy các Booking đã xong / hủy
   const historyBookings = useMemo(() => {
     return bookings.filter(b => b.status === 'COMPLETED' || b.status === 'CANCELLED');
@@ -67,7 +74,7 @@ export default function HelperHistory() {
 
     // Lọc theo ngày (YYYY-MM-DD)
     if (filterDate) {
-      result = result.filter(b => b.startTime && b.startTime.startsWith(filterDate));
+      result = result.filter(b => toLocalDateKey(b.startTime) === filterDate);
     }
 
     // Lọc theo Search (Keyword)
