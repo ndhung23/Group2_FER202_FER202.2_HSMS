@@ -49,24 +49,28 @@ export default function HelperScheduleWeekly() {
 
   // ----- TÍNH TOÁN LỌC THEO THỜI GIAN ----- //
   const timeFilteredBookings = useMemo(() => {
-    const now = new Date();
-    
+    const today = new Date();
+
+    // Tính toán startOfWeek và endOfWeek 1 lần ngoài vòng lặp
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(endOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
     return bookings.filter(b => {
       const d = new Date(b.startTime);
       if (filterPeriod === "DAY") {
-        return d.getDate() === now.getDate() && 
-               d.getMonth() === now.getMonth() && 
-               d.getFullYear() === now.getFullYear();
+        return d.getDate() === today.getDate() &&
+          d.getMonth() === today.getMonth() &&
+          d.getFullYear() === today.getFullYear();
       } else if (filterPeriod === "WEEK") {
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
-        startOfWeek.setHours(0, 0, 0, 0);
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(endOfWeek.getDate() + 6);
-        endOfWeek.setHours(23, 59, 59, 999);
         return d >= startOfWeek && d <= endOfWeek;
       } else if (filterPeriod === "MONTH") {
-        return d.getMonth() === now.getMonth() && 
-               d.getFullYear() === now.getFullYear();
+        return d.getMonth() === today.getMonth() &&
+          d.getFullYear() === today.getFullYear();
       }
       return true;
     });
@@ -113,8 +117,8 @@ export default function HelperScheduleWeekly() {
                 Danh sách ca trực
               </div>
               <div className="d-flex gap-2">
-                <Form.Select 
-                  value={filterPeriod} 
+                <Form.Select
+                  value={filterPeriod}
                   onChange={(e) => {
                     setFilterPeriod(e.target.value);
                     setCurrentPage(1);
