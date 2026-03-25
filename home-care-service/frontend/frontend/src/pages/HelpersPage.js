@@ -31,13 +31,14 @@ export default function HelpersPage() {
         fetchHelpersData();
     }, []);
 
-    // Ghép users với helperProfiles
+    // Ghép users với helperProfiles (FIX ID)
     const combinedHelpers = useMemo(() => {
         return helpers.map(h => {
             const profile = profiles.find(p => String(p.userId) === String(h.id)) || {};
             return {
                 ...h,
-                ...profile
+                ...profile,
+                id: h.id // ✅ giữ lại user.id
             };
         });
     }, [helpers, profiles]);
@@ -46,19 +47,16 @@ export default function HelpersPage() {
     const filteredHelpers = useMemo(() => {
         let result = combinedHelpers;
 
-        // Tên (Search Keyword)
         if (search) {
             const keyword = search.trim().toLowerCase();
             result = result.filter(h => h.fullName?.toLowerCase().includes(keyword));
         }
 
-        // Lọc sao Rating
         if (ratingFilter !== "ALL") {
             const minRating = parseFloat(ratingFilter);
             result = result.filter(h => h.avgRating >= minRating);
         }
 
-        // Sắp xếp ưu tiên: Theo đánh giá cao nhất -> Hoàn thành nhiều nhất
         result.sort((a, b) => {
             if (b.avgRating !== a.avgRating) {
                 return (b.avgRating || 0) - (a.avgRating || 0);
@@ -72,7 +70,7 @@ export default function HelpersPage() {
     return (
         <div style={{ backgroundColor: "#f4f6f8", minHeight: "100vh", paddingBottom: "60px", paddingTop: "24px" }}>
             <Container>
-                {/* Header / Hero Section */}
+                {/* Header */}
                 <div className="bg-primary text-white py-5 mb-4 rounded-4 shadow-sm" style={{
                     background: "linear-gradient(135deg, #ebae45 0%, #e5e97f 100%)"
                 }}>
@@ -91,7 +89,7 @@ export default function HelpersPage() {
                     </Container>
                 </div>
 
-                {/* Thanh Lọc & Tìm Kiếm */}
+                {/* Filter */}
                 <Card className="border-0 shadow-sm rounded-4 mb-5">
                     <Card.Body className="p-4">
                         <Row className="g-3">
@@ -124,7 +122,7 @@ export default function HelpersPage() {
                     </Card.Body>
                 </Card>
 
-                {/* Danh sách Card Helpers */}
+                {/* List */}
                 {loading ? (
                     <div className="text-center py-5">
                         <Spinner animation="border" variant="primary" />
@@ -141,51 +139,56 @@ export default function HelpersPage() {
                             <Row className="g-4">
                                 {filteredHelpers.map(helper => (
                                     <Col key={helper.id} xs={12} sm={6} lg={4} xl={3}>
-                                        <Card className="h-100 border-0 shadow-sm rounded-4 overflow-hidden helper-card-hover" style={{ transition: "transform 0.2s" }}>
-                                            <div className="text-center pt-4 pb-2 bg-light">
-                                                <div
-                                                    style={{
-                                                        width: '100px',
-                                                        height: '100px',
-                                                        borderRadius: '50%',
-                                                        margin: '0 auto',
-                                                        backgroundImage: `url(${helper.avatarUrl || "https://img.freepik.com/premium-vector/avatar-icon002_750950-52.jpg"})`,
-                                                        backgroundSize: 'cover',
-                                                        backgroundPosition: 'center',
-                                                        border: '4px solid white',
-                                                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                                                    }}
-                                                />
-                                            </div>
-                                            <Card.Body className="text-center">
-                                                <h5 className="fw-bold mb-1">{helper.fullName}</h5>
-                                                <div className="text-muted small mb-2">
-                                                    {helper.gender === "FEMALE" ? "Nữ" : helper.gender === "MALE" ? "Nam" : "Khác"} • {helper.age || (new Date().getFullYear() - helper.birthYear)} tuổi
+                                        <Link 
+                                            to={`/helpers/${helper.id}`}
+                                            style={{ textDecoration: "none", color: "inherit" }}
+                                        >
+                                            <Card className="h-100 border-0 shadow-sm rounded-4 overflow-hidden helper-card-hover" style={{ transition: "transform 0.2s" }}>
+                                                <div className="text-center pt-4 pb-2 bg-light">
+                                                    <div
+                                                        style={{
+                                                            width: '100px',
+                                                            height: '100px',
+                                                            borderRadius: '50%',
+                                                            margin: '0 auto',
+                                                            backgroundImage: `url(${helper.avatarUrl || "https://img.freepik.com/premium-vector/avatar-icon002_750950-52.jpg"})`,
+                                                            backgroundSize: 'cover',
+                                                            backgroundPosition: 'center',
+                                                            border: '4px solid white',
+                                                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                                                        }}
+                                                    />
                                                 </div>
-
-                                                <div className="d-flex justify-content-center align-items-center gap-2 mb-3">
-                                                    <Badge bg="warning" text="dark" className="d-flex align-items-center gap-1 rounded-pill px-2">
-                                                        ⭐ {helper.avgRating || "Mới"}
-                                                    </Badge>
-                                                    <span className="text-muted small">
-                                                        ({helper.totalReviews || 0} Đánh giá)
-                                                    </span>
-                                                </div>
-
-                                                <p className="card-text text-muted" style={{ fontSize: '14px', minHeight: '42px', display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                                    {helper.bio || "Người giúp việc tận tâm theo tiêu chuẩn của HomeCare."}
-                                                </p>
-
-                                                <div className="border-top pt-3 d-flex justify-content-between text-muted" style={{ fontSize: '13px' }}>
-                                                    <div>
-                                                        <strong>{helper.completedJobs || 0}</strong> Chuyến
+                                                <Card.Body className="text-center">
+                                                    <h5 className="fw-bold mb-1">{helper.fullName}</h5>
+                                                    <div className="text-muted small mb-2">
+                                                        {helper.gender === "FEMALE" ? "Nữ" : helper.gender === "MALE" ? "Nam" : "Khác"} • {helper.age || (new Date().getFullYear() - helper.birthYear)} tuổi
                                                     </div>
-                                                    <div>
-                                                        <span className="text-success">✔ Đã kiểm duyệt</span>
+
+                                                    <div className="d-flex justify-content-center align-items-center gap-2 mb-3">
+                                                        <Badge bg="warning" text="dark" className="d-flex align-items-center gap-1 rounded-pill px-2">
+                                                            ⭐ {helper.avgRating || "Mới"}
+                                                        </Badge>
+                                                        <span className="text-muted small">
+                                                            ({helper.totalReviews || 0} Đánh giá)
+                                                        </span>
                                                     </div>
-                                                </div>
-                                            </Card.Body>
-                                        </Card>
+
+                                                    <p className="card-text text-muted" style={{ fontSize: '14px', minHeight: '42px', display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                        {helper.bio || "Người giúp việc tận tâm theo tiêu chuẩn của HomeCare."}
+                                                    </p>
+
+                                                    <div className="border-top pt-3 d-flex justify-content-between text-muted" style={{ fontSize: '13px' }}>
+                                                        <div>
+                                                            <strong>{helper.completedJobs || 0}</strong> Chuyến
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-success">✔ Đã kiểm duyệt</span>
+                                                        </div>
+                                                    </div>
+                                                </Card.Body>
+                                            </Card>
+                                        </Link>
                                     </Col>
                                 ))}
                             </Row>

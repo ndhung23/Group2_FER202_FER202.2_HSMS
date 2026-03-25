@@ -28,6 +28,7 @@ import HelperIncome from "./pages/helper/HelperIncome";
 import HelperHistory from "./pages/helper/HelperHistory";
 import HelperReviews from "./pages/helper/HelperReviews";
 import HelperProfile from "./pages/helper/HelperProfile";
+import HelperProfilePublic from "./pages/helper/HelperProfilePublic";
 
 // Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -55,6 +56,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/error" element={<NotPublic />} />
+        <Route path="/helpers/:id" element={<HelperProfilePublic />} />
 
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
