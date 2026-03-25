@@ -7,6 +7,7 @@ export default function CustomerBookings() {
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
   const [helpers, setHelpers] = useState([]);
+  const [reviewTags, setReviewTags] = useState([]);
 
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
@@ -17,25 +18,36 @@ export default function CustomerBookings() {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewForm, setReviewForm] = useState({
+    rating: 5,
+    comment: "",
+    tags: []
+  });
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
+      setCurrentUserId(parsedUser.id);
       fetchData(parsedUser.id);
     }
   }, []);
 
   const fetchData = async (customerId) => {
     try {
-      const [resBookings, resServices, resHelpers] = await Promise.all([
+      const [resBookings, resServices, resHelpers, resReviewTags] = await Promise.all([
         axios.get(`http://localhost:9999/bookings?customerId=${customerId}`),
         axios.get(`http://localhost:9999/services`),
-        axios.get(`http://localhost:9999/users?role=HELPER`)
+        axios.get(`http://localhost:9999/users?role=HELPER`),
+        axios.get(`http://localhost:9999/reviewTags`)
       ]);
       setBookings(resBookings.data || []);
       setServices(resServices.data || []);
       setHelpers(resHelpers.data || []);
+      setReviewTags(resReviewTags.data || []);
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu Lịch sử Đơn hàng:", error);
     }
@@ -163,6 +175,53 @@ export default function CustomerBookings() {
     } catch (error) {
       console.error("Lỗi khi thanh toán:", error);
       alert("Hệ thống lỗi, không thể thanh toán được lúc này.");
+    }
+  };
+
+  const toggleTag = (tagLabel) => {
+    setReviewForm(prev => {
+      const existed = prev.tags.includes(tagLabel);
+      return {
+        ...prev,
+        tags: existed ? prev.tags.filter(t => t !== tagLabel) : [...prev.tags, tagLabel]
+      };
+    });
+  };
+
+  const handleOpenReviewModal = () => {
+    if (!selectedItem) return;
+    setReviewForm({
+      rating: 5,
+      comment: "",
+      tags: []
+    });
+    setShowReviewModal(true);
+  };
+
+  const submitReview = async () => {
+    if (!selectedItem || !currentUserId) return;
+    try {
+      setIsSubmittingReview(true);
+      const payload = {
+        id: Date.now().toString(),
+        bookingId: String(selectedItem.id),
+        customerId: String(currentUserId),
+        helperId: selectedItem.assignedHelperId ? String(selectedItem.assignedHelperId) : null,
+        rating: Number(reviewForm.rating),
+        comment: reviewForm.comment.trim(),
+        tags: reviewForm.tags,
+        createdAt: new Date().toISOString()
+      };
+
+      await axios.post(`http://localhost:9999/reviews`, payload);
+      alert('Gửi đánh giá thành công!');
+      setShowReviewModal(false);
+      setShowModal(false);
+    } catch (error) {
+      console.error('Lỗi khi gửi đánh giá:', error);
+      alert('Không thể gửi đánh giá lúc này. Vui lòng thử lại.');
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -398,13 +457,72 @@ export default function CustomerBookings() {
         <Modal.Footer className="justify-content-between">
           <div>
             {selectedItem && selectedItem.status === 'COMPLETED' && (
-              <Button variant="outline-warning" onClick={() => alert('Mở form Đánh Giá (Review) cho đơn này')} className="fw-bold">
+              <Button variant="outline-warning" onClick={handleOpenReviewModal} className="fw-bold">
                 ⭐ Gửi Đánh Giá Ngay
               </Button>
             )}
           </div>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showReviewModal} onHide={() => setShowReviewModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Đánh giá dịch vụ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Rating</Form.Label>
+            <Form.Select
+              value={reviewForm.rating}
+              onChange={(e) => setReviewForm(prev => ({ ...prev, rating: Number(e.target.value) }))}
+            >
+              <option value={5}>5 sao</option>
+              <option value={4}>4 sao</option>
+              <option value={3}>3 sao</option>
+              <option value={2}>2 sao</option>
+              <option value={1}>1 sao</option>
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Comment</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Nhập nhận xét của bạn"
+              value={reviewForm.comment}
+              onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
+            />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Review Tags</Form.Label>
+            <div className="d-flex flex-wrap gap-2 mt-2">
+              {reviewTags.map((tag) => (
+                <Button
+                  key={tag.id}
+                  size="sm"
+                  variant={reviewForm.tags.includes(tag.label) ? 'primary' : 'outline-secondary'}
+                  onClick={() => toggleTag(tag.label)}
+                >
+                  {tag.label}
+                </Button>
+              ))}
+              {reviewTags.length === 0 && (
+                <span className="text-muted fst-italic">Chưa có tag đánh giá.</span>
+              )}
+            </div>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowReviewModal(false)}>
+            Hủy
+          </Button>
+          <Button variant="warning" onClick={submitReview} disabled={isSubmittingReview}>
+            {isSubmittingReview ? 'Đang gửi...' : 'Gửi đánh giá'}
           </Button>
         </Modal.Footer>
       </Modal>
