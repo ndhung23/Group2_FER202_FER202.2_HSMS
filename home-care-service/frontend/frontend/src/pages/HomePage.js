@@ -195,7 +195,12 @@ export default function HomePage() {
                       <Badge bg="light" text="dark" className="border">Nhiệt tình</Badge>
                     </div>
 
-                    <Button className="w-100 rounded-3 mt-4" variant="outline-primary">
+                    <Button
+                      as={Link}
+                      to={`/helpers/${h.id}`}
+                      className="w-100 rounded-3 mt-4"
+                      variant="outline-primary"
+                    >
                       Xem chi tiết
                     </Button>
                   </Card.Body>
