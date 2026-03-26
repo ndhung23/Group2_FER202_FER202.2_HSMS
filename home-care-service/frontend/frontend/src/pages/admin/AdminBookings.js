@@ -92,6 +92,7 @@ export default function AdminBookings() {
       let result = [...bookings];
 
       // Tab logic
+      // “Đơn cần duyệt” lọc PENDING/PENDING_DEPOSIT/PAID_DEPOSIT
       if (activeTab === "PENDING") {
          result = result.filter(b => b.status === "PENDING" || b.status === "PENDING_DEPOSIT" || b.status === "PAID_DEPOSIT");
       } else {
@@ -131,18 +132,21 @@ export default function AdminBookings() {
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
    );
-
+   //duyệt đơn mà không phân công nhân viên thì sẽ chuyển trạng thái thành PENDING_DEPOSIT luôn,
+   //  khách sẽ nhận được yêu cầu cọc 50% qua app
    const handleApproveWithoutHelper = async (b) => {
+        // Nếu đơn đang PENDING thì mới cho duyệt thẳng, còn nếu đã có cọc rồi thì bắt buộc phải phân công nhân viên
        if(!window.confirm(`Xác nhận duyệt lịch ${b.bookingCode} và yêu cầu cọc?`)) return;
        try {
            await axios.patch(`http://localhost:9999/bookings/${b.id}`, {
+               //duyệt xong đổi status: PENDING_DEPOSIT để khách nhận được yêu cầu cọc 50%
                status: 'PENDING_DEPOSIT',
                updatedAt: new Date().toISOString()
            });
            fetchData();
        } catch (error) { console.error(error); alert("Lỗi khi duyệt"); }
    };
-
+   //mở modal phân công helper.
    const handleCancel = async (b) => {
        if(!window.confirm(`Xác nhận HỦY lịch ${b.bookingCode}?`)) return;
        try {
@@ -164,6 +168,7 @@ export default function AdminBookings() {
        if(!selectedHelper) { alert('Vui lòng chọn nhân viên!'); return; }
        try {
            setLoading(true);
+           //cập nhật assignedHelperId
            let statusUpdate = selectedBooking.status;
            if(statusUpdate === "PENDING") statusUpdate = "PENDING_DEPOSIT"; // Approve auto
 

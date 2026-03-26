@@ -52,7 +52,7 @@ export default function HelperDashboard() {
       fetchDashboardData(parsedUser.id);
     }
   }, []);
-
+  //load bookings theo assignedHelperId.
   const fetchDashboardData = async (helperId) => {
     try {
       const [resBookings, resServices, resReviews, resPayouts] = await Promise.all([
@@ -86,7 +86,7 @@ export default function HelperDashboard() {
     if (status === "CONFIRMED") return <Badge bg="info">Đã xác nhận</Badge>;
     return <Badge bg="warning" text="dark">Chờ xử lý</Badge>;
   };
-
+  // rule chuyển trạng thái hợp lệ.
   const getAllowedNextStatuses = (currentStatus) => {
     if (["PENDING", "PENDING_DEPOSIT", "PAID_DEPOSIT", "CONFIRMED"].includes(currentStatus)) {
       return ["IN_PROGRESS", "CANCELLED"];

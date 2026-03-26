@@ -14,6 +14,7 @@ export function getUser() {
   }
 }
 
+// Lưu token, role và thông tin người dùng vào localStorage sau khi đăng nhập thành công
 export function setAuth(token, role, user = null) {
   localStorage.setItem("token", token);
   localStorage.setItem("role", role);

@@ -138,12 +138,12 @@ export default function CustomerProfile() {
                       <Form.Control required name="fullName" value={formData.fullName} onChange={handleChange} className="fw-bold text-dark" />
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
+                  {/* <Col md={6}>
                     <Form.Group>
                       <Form.Label className="text-muted fw-semibold" style={{ fontSize: "14px" }}>Mã ID (Không đổi)</Form.Label>
                       <Form.Control readOnly value={customer.id || ""} className="bg-light" />
                     </Form.Group>
-                  </Col>
+                  </Col> */}
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label className="text-muted fw-semibold" style={{ fontSize: "14px" }}>Email *</Form.Label>
@@ -170,7 +170,7 @@ export default function CustomerProfile() {
                   </Col>
                   <Col md={3}>
                     <Form.Group>
-                      <Form.Label className="text-muted fw-semibold" style={{ fontSize: "14px" }}>Độ tuổi (Tự tính)</Form.Label>
+                      <Form.Label className="text-muted fw-semibold" style={{ fontSize: "14px" }}>Độ tuổi</Form.Label>
                       <Form.Control readOnly value={Math.max(0, new Date().getFullYear() - parseInt(formData.yearOfBirth || new Date().getFullYear()))} className="bg-light fw-bold" />
                     </Form.Group>
                   </Col>

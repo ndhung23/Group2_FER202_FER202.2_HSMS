@@ -25,7 +25,7 @@ export default function CustomerCreateBooking() {
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  // Khi component load, lấy thông tin user đã đăng nhập load user + danh sách service lên form
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -59,12 +59,15 @@ export default function CustomerCreateBooking() {
       .catch(err => console.error(err));
 
   }, [location.search, location.state]);
-
+  // Hàm tiện ích để chuyển đổi Date object sang định dạng YYYY-MM-DD phù hợp với input type="date"
+  // Hàm này sẽ điều chỉnh ngày giờ về local timezone để tránh lỗi lệch ngày do timezone khi hiển thị trên form
   const toLocalDateInputValue = (dateObj = new Date()) => {
+    // Chuyển về UTC rồi cắt lấy phần ngày tháng năm, tránh lỗi lệch ngày do timezone khi hiển thị trên form
     const timezoneOffsetMs = dateObj.getTimezoneOffset() * 60000;
+    // Trừ đi offset để có thời gian UTC, sau đó cắt chuỗi ISO lấy phần ngày tháng năm
     return new Date(dateObj.getTime() - timezoneOffsetMs).toISOString().slice(0, 10);
   };
-
+  // Hàm tiện ích để chuyển đổi Date object sang định dạng YYYY-MM-DDTHH:mm:ss phù hợp với API backend
   const toLocalDateTimeString = (dateObj) => {
     const pad = (value) => String(value).padStart(2, '0');
     return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}T${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}`;
@@ -95,7 +98,8 @@ export default function CustomerCreateBooking() {
     d.setMinutes(parseInt(m) + parseInt(formData.duration));
     return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   };
-
+  //Validate form thông tin đầu vào, sau đó gửi yêu cầu tạo booking mới lên server 
+  // bằng axios.post với payload chứa thông tin booking đã được chuẩn hóa theo API của backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.serviceId || !formData.date || !formData.time || !formData.address) {
@@ -133,7 +137,7 @@ export default function CustomerCreateBooking() {
         endTime: toLocalDateTimeString(endDateTime),
         durationMinutes: parseInt(formData.duration, 10),
         note: formData.note,
-        status: "PENDING",
+        status: "PENDING",// Trạng thái ban đầu là PENDING, chờ hệ thống tìm Helper nhận
         assignedHelperId: null, // Chưa có ai nhận
         pricing: {
           base: costBase,
@@ -142,6 +146,7 @@ export default function CustomerCreateBooking() {
           total: costBase,
           currency: "VND"
         },
+        // Phần paymentStatus sẽ được cập nhật sau khi khách hàng thanh toán, ban đầu để PENDING
         paymentStatus: {
           deposit: "PENDING",
           final: "PENDING"
@@ -150,7 +155,8 @@ export default function CustomerCreateBooking() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-
+      // Gửi payload lên server để tạo booking mới với phương thức POST,
+      //  endpoint /bookings, và body chứa payload đã chuẩn hóa
       await axios.post('http://localhost:9999/bookings', payload);
       setSuccess(true);
 

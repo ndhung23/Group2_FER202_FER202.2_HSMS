@@ -25,7 +25,8 @@ export default function CustomerBookings() {
       fetchData(parsedUser.id);
     }
   }, []);
-
+  // Hàm fetchData sẽ gọi đồng thời 3 API để lấy dữ liệu bookings,
+  //  services và helpers, sau đó lưu vào state tương ứng
   const fetchData = async (customerId) => {
     try {
       const [resBookings, resServices, resHelpers] = await Promise.all([
@@ -108,21 +109,22 @@ export default function CustomerBookings() {
     setSelectedItem(item);
     setShowModal(true);
   };
-
+  // Hàm markPayment sẽ xử lý logic khi khách hàng nhấn thanh toán cọc hoặc nghiệm thu,
+  //  nó sẽ xác nhận lại với khách hàng, sau đó cập nhật trạng thái thanh toán vào booking hiện tại,
+  //  gửi request PATCH lên server để cập nhật DB JSON, và cuối cùng cập nhật lại state bookings 
+  // để UI phản ánh ngay mà không cần reload
   const markPayment = async (statusType) => {
     if (!selectedItem) return;
-    
     try {
       let updatedBooking = { ...selectedItem };
-      
       if (statusType === 'DEPOSIT') {
         const isConfirm = window.confirm(
           `Xác nhận thanh toán 50% tiền cọc (${formatCurrency(selectedItem.pricing?.base / 2 || 0)}) qua Cổng thanh toán?`
         );
         if (!isConfirm) return;
-        
         updatedBooking = {
           ...updatedBooking,
+          //cập nhật paymentStatus.deposit = PAID và status = PAID_DEPOSIT để phản ánh đã thanh toán cọc, chờ nghiệm thu
           status: 'PAID_DEPOSIT',
           paymentStatus: {
             ...updatedBooking.paymentStatus,
@@ -135,7 +137,7 @@ export default function CustomerBookings() {
           `Xác nhận thanh toán 50% phí còn lại (${formatCurrency(selectedItem.pricing?.base / 2 || 0)}) qua Cổng thanh toán?`
         );
         if (!isConfirm) return;
-
+        // Cập nhật paymentStatus.final = PAID và status = PAID để phản ánh đã thanh toán đầy đủ
         updatedBooking = {
           ...updatedBooking,
           paymentStatus: {
@@ -145,20 +147,16 @@ export default function CustomerBookings() {
           updatedAt: new Date().toISOString()
         };
       }
-
       // Xây dựng request payload an toàn để Patch DB JSON
       const payload = {
          status: updatedBooking.status,
          paymentStatus: updatedBooking.paymentStatus,
          updatedAt: updatedBooking.updatedAt
       };
-
       await axios.patch(`http://localhost:9999/bookings/${selectedItem.id}`, payload);
-      
       // Update local state without reload
       setBookings(prev => prev.map(b => String(b.id) === String(selectedItem.id) ? updatedBooking : b));
       setSelectedItem(updatedBooking); // cập nhật lại modal đang mở
-      
       alert(`Thanh toán ${statusType === 'DEPOSIT' ? 'tiền cọc' : 'nghiệm thu'} thành công!`);
     } catch (error) {
       console.error("Lỗi khi thanh toán:", error);
@@ -364,9 +362,13 @@ export default function CustomerBookings() {
                       <Col md={6}>
                         <div className="d-flex justify-content-between mt-2 pt-2 border-top">
                           <span className="fw-bold text-dark">Thanh toán chót (Final 50%):</span>
+                          {/* // Nếu đã thanh toán cọc thì mới hiển thị nút nghiệm thu, và chỉ
+                           cho phép nghiệm thu khi trạng thái đã là COMPLETED (đã hoàn thành dịch vụ) */}
                           {selectedItem.paymentStatus?.final === "PAID"
                             ? <span className="text-success fw-bold">Đã Trả Đủ</span>
-                            : <Button size="sm" variant="success" disabled={selectedItem.status !== 'COMPLETED'} onClick={() => markPayment('FINAL')}>Nghiệm Thu</Button>
+                            : <Button size="sm" variant="success" 
+                                    disabled={selectedItem.status !== 'COMPLETED'}
+                                    onClick={() => markPayment('FINAL')}>Nghiệm Thu</Button>
                           }
                         </div>
                       </Col>

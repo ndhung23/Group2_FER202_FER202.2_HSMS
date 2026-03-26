@@ -33,6 +33,7 @@ export default function LoginPage() {
         setError("Tài khoản của bạn đã bị cấm hoạt động. Vui lòng liên hệ quản trị viên.");
         return;
       }
+      // Giả lập token và lưu thông tin đăng nhập vào localStorage token/role/user khi đăng nhập bằng setAuth
       setAuth("mock-token", user.role, user);
       if (user.role === "ADMIN") navigate("/admin");
       else if (user.role === "HELPER") navigate("/helper");

@@ -8,6 +8,8 @@ const HOME = {
 };
 
 export default function RoleRoute({ allow }) {
+  //Kiểm tra role của người dùng, nếu không có quyền truy cập thì 
+  // chuyển hướng đến trang chủ tương ứng với role của họ
   const role = getRole();
 
   if (!allow.includes(role)) {

@@ -17,7 +17,7 @@ export default function CustomerDashboard() {
       fetchData(parsedUser.id);
     }
   }, []);
-
+  //chỉ tổng hợp số liệu + recent bookings. Chi tiết sẽ hiển thị ở trang /customer/bookings
   const fetchData = async (customerId) => {
     try {
       const [resBookings, resServices] = await Promise.all([

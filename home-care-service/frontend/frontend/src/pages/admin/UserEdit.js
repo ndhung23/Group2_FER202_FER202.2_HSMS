@@ -264,7 +264,7 @@ export default function UserEdit() {
                   </Form.Group>
                 </Col>
 
-                {!id && (
+                {/* {!id && (
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label>Mật khẩu</Form.Label>
@@ -277,9 +277,9 @@ export default function UserEdit() {
                       {msgPassword && <span style={{ color: "red" }}>{msgPassword}</span>}
                     </Form.Group>
                   </Col>
-                )}
+                )} */}
 
-                <Col md={6}>
+                {/* <Col md={6}>
                   <Form.Group>
                     <Form.Label>Avatar URL</Form.Label>
                     <Form.Control
@@ -288,7 +288,7 @@ export default function UserEdit() {
                       placeholder="Nhập link ảnh đại diện"
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 <Col md={6}>
                   <Form.Group>
